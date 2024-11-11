@@ -5,22 +5,17 @@ on:
 
 jobs:
   Build-Kernel:
-    strategy:
-      fail-fast: false
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-
     steps:
     - name: Build Kernel
       uses: dabao1955/kernel_build_action@v1.7.0
       with:
           kernel-url: https://github.com/Andrey0800770/samsung_sdm845-kernel
-          kernel-dir: sdm845
           kernel-branch: main
           config: star2qlte_chn_open_defconfig
           arch: arm64
           aosp-gcc: true
           aosp-clang: false
           android-version: 10
+          aosp-clang-version: r383902
           anykernel3: true
