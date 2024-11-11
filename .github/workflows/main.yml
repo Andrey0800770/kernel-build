@@ -22,9 +22,4 @@ jobs:
           arch: arm64
           aosp-gcc: true
           aosp-clang: false
-          android-version: false
-          aosp-clang-version: false
-          other-clang-url: false
-          other-clang-branch: false
-
-
+          
