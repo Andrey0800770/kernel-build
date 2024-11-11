@@ -21,3 +21,10 @@ jobs:
           config: star2qlte_chn_open_defconfig
           arch: arm64
           aosp-gcc: true
+          aosp-clang: false
+          android-version: false
+          aosp-clang-version: false
+          other-clang-url: false
+          other-clang-branch: false
+
+
