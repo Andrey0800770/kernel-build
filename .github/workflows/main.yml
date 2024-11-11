@@ -21,6 +21,5 @@ jobs:
           config: star2qlte_chn_open_defconfig
           arch: arm64
           aosp-gcc: true
-          aosp-clang: true
-          android-version: 10
-          aosp-clang-version: r353983c
+          aosp-clang: false
+          other-clang-url: https://github.com/LineageOS/android_prebuilts_gcc_linux-x86_aarch64_aarch64-linux-android-4.9.git
