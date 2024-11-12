@@ -20,3 +20,4 @@ jobs:
           kernel-branch: main
           config: star2qlte_chn_open_defconfig
           arch: arm64
+          anykernel3: true
