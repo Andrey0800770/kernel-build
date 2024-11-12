@@ -21,5 +21,6 @@ jobs:
           config: star2qlte_chn_open_defconfig
           arch: arm64
           ksu: true
-          ksu-version: v0.7.0
+          ksu-version: v1.0.2-legacy
+          ksu-url: https://github.com/rsuntk/KernelSU
           anykernel3: true
