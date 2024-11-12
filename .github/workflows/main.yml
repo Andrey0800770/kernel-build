@@ -20,4 +20,6 @@ jobs:
           kernel-branch: main
           config: star2qlte_chn_open_defconfig
           arch: arm64
+          ksu: true
+          ksu-version: v0.9.5
           anykernel3: true
