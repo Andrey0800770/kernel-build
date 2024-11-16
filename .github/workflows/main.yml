@@ -20,5 +20,6 @@ jobs:
           kernel-branch: KSU
           config: star2qlte_chn_open_defconfig
           arch: arm64
-          path: "$GCC64:$PATH" make -j$(nproc --all) CROSS_COMPILE=aarch64-linux-android- O=out ARCH=arm64
+          path: $GCC64:$PATH
+          make-options: "make -j$(nproc --all) CROSS_COMPILE=aarch64-linux-android- O=out ARCH=arm64"
           anykernel3: true
