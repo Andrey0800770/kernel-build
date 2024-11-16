@@ -17,7 +17,7 @@ jobs:
       with:
           kernel-url: https://github.com/Andrey0800770/samsung_sdm845-kernel
           kernel-dir: sdm845
-          kernel-branch: main
+          kernel-branch: KSU
           config: star2qlte_chn_open_defconfig
           arch: arm64
           gcc64-url: https://github.com/GrowtopiaJaw/aarch64-linux-android-4.9.git -b linaro --single-branch
