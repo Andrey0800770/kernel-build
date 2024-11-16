@@ -20,7 +20,7 @@ jobs:
           kernel-branch: main
           config: star2qlte_chn_open_defconfig
           arch: arm64
-          gcc64-url: https://github.com/LineageOS/android_prebuilts_gcc_linux-x86_aarch64_aarch64-linux-android-4.9.git
+          gcc64-url: https://github.com/GrowtopiaJaw/aarch64-linux-android-4.9.git -b linaro --single-branch
           path: $GCC64:$PATH
           make-options: "make -j$(nproc --all) CROSS_COMPILE=aarch64-linux-android- O=out ARCH=arm64"
           python: python2
