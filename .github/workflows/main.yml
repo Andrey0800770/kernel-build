@@ -22,6 +22,6 @@ jobs:
           arch: arm64
           gcc64-url: https://github.com/GrowtopiaJaw/aarch64-linux-android-4.9.git -b linaro --single-branch
           path: $GCC64:$PATH
-          make-options: "make -j$(nproc --all) CROSS_COMPILE=aarch64-linux-android- O=out ARCH=arm64"
+          make-options: "make -j$(nproc --all) CROSS_COMPILE=aarch64-elf- O=out ARCH=arm64"
           python: python2
           anykernel3: true
