@@ -22,4 +22,5 @@ jobs:
           arch: arm64
           path: $GCC64:$PATH
           make-options: "make -j$(nproc --all) CROSS_COMPILE=aarch64-linux-android- O=out ARCH=arm64"
+          python: python2
           anykernel3: true
