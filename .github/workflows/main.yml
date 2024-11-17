@@ -20,7 +20,7 @@ jobs:
           kernel-branch: KSU
           config: star2qlte_chn_open_defconfig
           arch: arm64
-          gcc64-url: https://github.com/GrowtopiaJaw/aarch64-linux-android-4.9.git -b linaro
+          gcc64-tar: http://releases.linaro.org/components/toolchain/binaries/7.5-2019.12/aarch64-elf/gcc-linaro-7.5.0-2019.12-x86_64_aarch64-elf.tar.xz
           path: $GCC64:$PATH
           make-options: "make -j$(nproc --all) CROSS_COMPILE=aarch64-elf- O=out ARCH=arm64"
           python: python2
