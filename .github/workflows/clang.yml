@@ -21,8 +21,7 @@ jobs:
           config: star2qlte_chn_open_defconfig
           arch: arm64
           gcc64-url: https://github.com/GrowtopiaJaw/aarch64-linux-android-4.9.git -b linaro
-          clang-url: https://github.com/Ancient-Project/clang-10
-          path: $CLANG:$GCC64:$PATH
+          clang-url: https://github.com/LineageOS/android_prebuilts_clang_kernel_linux-x86_clang-r416183b          path: $CLANG:$GCC64:$PATH
           make-options: "make -j$(nproc --all) CROSS_COMPILE=aarch64-elf- CLANG_TRIPLE=aarch64-linux-gnu- O=out ARCH=arm64 CC=clang"
           python: python2
           anykernel3: true
