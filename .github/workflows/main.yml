@@ -21,7 +21,7 @@ jobs:
           config: star2qlte_chn_open_defconfig
           arch: arm64
           gcc64-tar: http://releases.linaro.org/components/toolchain/binaries/7.5-2019.12/aarch64-elf/gcc-linaro-7.5.0-2019.12-x86_64_aarch64-elf.tar.xz
-          path: $GCC64/gcc-linaro-7.5.0-2019.12-x86_64_aarch64-elf:$PATH
+          path: $HOME/gcc64/gcc-linaro-7.5.0-2019.12-x86_64_aarch64-elf:$PATH
           make-options: "make -j$(nproc --all) CROSS_COMPILE=aarch64-elf- O=out ARCH=arm64"
           python: python2
           anykernel3: true
