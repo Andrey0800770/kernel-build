@@ -20,8 +20,8 @@ jobs:
           kernel-branch: KSU
           config: star2qlte_chn_open_defconfig
           arch: arm64
-          gcc64-tar: https://releases.linaro.org/components/toolchain/binaries/6.5-2018.12/aarch64-elf/gcc-linaro-6.5.0-2018.12-i686_aarch64-elf.tar.xz
-          path: $HOME/gcc64/gcc-linaro-6.5.0-2018.12-i686_aarch64-elf/bin:$PATH
+          gcc64-tar: https://releases.linaro.org/components/toolchain/binaries/5.5-2017.10/aarch64-elf/gcc-linaro-5.5.0-2017.10-i686_aarch64-elf.tar.xz
+          path: $HOME/gcc64/gcc-linaro-5.5.0-2017.10-i686_aarch64-elf/bin:$PATH
           make-options: "make -j$(nproc --all) CROSS_COMPILE=aarch64-elf- O=out ARCH=arm64"
           python: python2
           anykernel3: true
