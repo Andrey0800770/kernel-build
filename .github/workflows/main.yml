@@ -20,8 +20,8 @@ jobs:
           kernel-branch: KSU
           config: star2qlte_chn_open_defconfig
           arch: arm64
-          gcc64-url: https://staging-git.codelinaro.org/clo/public-release-test/platform/prebuilts/gcc/linux-x86/aarch64/aarch64-linux-android-4.9
-          path: $GCC64:$PATH
+          gcc64-url: https://staging-git.codelinaro.org/clo/public-release-test/platform/prebuilts/gcc/linux-x86/aarch64/aarch64-linux-android-4.9.git
+          path: $HOME/gcc64/bin:$PATH
           make-options: "make -j$(nproc --all) CROSS_COMPILE=aarch64-linux-android- O=out ARCH=arm64"
           python: python2
           anykernel3: true
