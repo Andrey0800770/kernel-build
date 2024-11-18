@@ -17,11 +17,11 @@ jobs:
       with:
           kernel-url: https://github.com/Andrey0800770/samsung_sdm845-kernel
           kernel-dir: sdm845
-          kernel-branch: KSU
+          kernel-branch: test
           config: star2qlte_chn_open_defconfig
           arch: arm64
-          gcc64-url: https://staging-git.codelinaro.org/clo/public-release-test/platform/prebuilts/gcc/linux-x86/aarch64/aarch64-linux-android-4.9.git
+          gcc64-url: https://github.com/ryan-andri/aarch64-linaro-linux-gnu-4.9.git
           path: $HOME/gcc64/bin:$PATH
-          make-options: "make -j$(nproc --all) CROSS_COMPILE=aarch64-linux-android- O=out ARCH=arm64"
+          make-options: "make -j$(nproc --all) CROSS_COMPILE=aarch64-linux-gnu- O=out ARCH=arm64"
           python: python2
           anykernel3: true
