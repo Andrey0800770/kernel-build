@@ -20,7 +20,7 @@ jobs:
           kernel-branch: test
           config: star2qlte_chn_open_defconfig
           arch: arm64
-          gcc64-url: https://github.com/ryan-andri/aarch64-linaro-linux-gnu-4.9.git
+          gcc64-url: https://github.com/sukrut-kelkaarr/gcc-linaro-4.9
           path: $HOME/gcc64/bin:$PATH
           make-options: "make -j$(nproc --all) CROSS_COMPILE=aarch64-linux-gnu- O=out ARCH=arm64"
           python: python2
