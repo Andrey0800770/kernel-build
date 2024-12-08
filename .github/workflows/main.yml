@@ -17,7 +17,7 @@ jobs:
       with:
           kernel-url: https://github.com/Andrey0800770/samsung_sdm845-kernel
           kernel-dir: sdm845
-          kernel-branch: susksu
+          kernel-branch: dev
           config: star2qlte_chn_open_defconfig
           arch: arm64
           gcc64-url: https://github.com/sukrut-kelkaarr/gcc-linaro-4.9
