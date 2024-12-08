@@ -20,7 +20,8 @@ jobs:
           kernel-branch: main
           config: star2qlte_chn_open_defconfig
           arch: arm64
-          path: $HOME/runner/work/kernel-build/kernel-build/kernel/sdm845/tools/prebuilts/gcc-cfp-single/aarch64-linux-android-4.9/bin:$PATH
-          make-options: "make -j$(nproc --all) CROSS_COMPILE=aarch64-linux-android- O=out ARCH=arm64"
+          gcc64-url: https://github.com/sukrut-kelkaarr/gcc-linaro-4.9
+          path: $HOME/gcc64/bin:$PATH
+          make-options: "make -j$(nproc --all) CROSS_COMPILE=aarch64-linux-gnu- O=out ARCH=arm64"
           python: python2
           anykernel3: true
