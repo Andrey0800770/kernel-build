@@ -24,4 +24,5 @@ jobs:
           path: $HOME/gcc64/bin:$PATH
           make-options: "make -j$(nproc --all) CROSS_COMPILE=aarch64-linux-gnu- O=out ARCH=arm64"
           python: python2
+          ksu: true
           anykernel3: true
