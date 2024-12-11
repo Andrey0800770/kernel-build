@@ -22,6 +22,6 @@ jobs:
           arch: arm64
           clang-tar: https://github.com/kdrag0n/proton-clang/archive/refs/tags/20210522.tar.gz
           path: $HOME/proton-clang-20210522/bin:$PATH
-          make-options: "make -j$(nproc --all) CROSS_COMPILE=aarch64-linux-gnu- O=out ARCH=arm64 CC=clang"
+          make-options: "make CC=clang -j$(nproc --all) CROSS_COMPILE=aarch64-linux-gnu- O=out ARCH=arm64"
           python: python2
           anykernel3: true
