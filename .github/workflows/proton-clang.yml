@@ -1,0 +1,27 @@
+# A simple action usage
+name: Build Kernel CLANG
+on:
+  workflow_dispatch:
+
+jobs:
+  Build-Kernel:
+    strategy:
+      fail-fast: false
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+    - name: Build Kernel
+      uses: Andrey0800770/kernel_build_action@main
+      with:
+          kernel-url: https://github.com/Andrey0800770/samsung_sdm845-kernel
+          kernel-dir: sdm845
+          kernel-branch: clang
+          config: star2qlte_chn_open_defconfig
+          arch: arm64
+          clang-tar: https://github.com/kdrag0n/proton-clang/archive/refs/tags/20210522.tar.gz
+          path: $HOME/proton-clang-20210522/bin:$PATH
+          make-options: "make -j$(nproc --all) CROSS_COMPILE=aarch64-linux-gnu- O=out ARCH=arm64 CC=clang"
+          python: python2
+          anykernel3: true
