@@ -1,5 +1,5 @@
 # A simple action usage
-name: Build Kernel CLANG
+name: Build With Proton-Clang
 on:
   workflow_dispatch:
 
