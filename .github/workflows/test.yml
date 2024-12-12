@@ -22,6 +22,7 @@ jobs:
           arch: arm64
           clang-url: https://github.com/Klozz/Yuki-clang
           path: $CLANG:$PATH
-          make-options: "make -j$(nproc --all) O=out ARCH=arm64 LD=ld.lld NM=llvm-nm AR=llvm-ar CC=clang CLANG_TRIPLE=aarch64-linux-gnu- CROSS_COMPILE=aarch64-linux-gnu- CROSS_COMPILE_ARM32=arm-linux-gnueabi-
+          make-options: "make -j$(nproc --all) O=out ARCH=arm64 LD=ld.lld NM=llvm-nm AR=llvm-ar CC=clang CLANG_TRIPLE=aarch64-linux-gnu- CROSS_COMPILE=aarch64-linux-gnu- CROSS_COMPILE_ARM32=arm-linux-gnueabi-"
           python: python2
           anykernel3: true
+
