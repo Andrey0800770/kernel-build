@@ -15,10 +15,10 @@ jobs:
     - name: Build Kernel
       uses: Andrey0800770/kernel_build_action@main
       with:
-          kernel-url: https://github.com/ananjaser1211/Apollo
+          kernel-url: https://github.com/Andrey0800770/samsung_sdm845-kernel
           kernel-dir: sdm845
-          kernel-branch: Apollo
-          config: star2lte_defconfig
+          kernel-branch: clang
+          config: star2qlte_chn_open_defconfig
           arch: arm64
           gcc64-url: https://github.com/LineageOS/android_prebuilts_gcc_linux-x86_aarch64_aarch64-linux-android-4.9.git
           clang-url: https://github.com/LineageOS/android_prebuilts_clang_kernel_linux-x86_clang-r416183b
