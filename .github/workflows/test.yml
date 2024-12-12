@@ -15,10 +15,10 @@ jobs:
     - name: Build Kernel
       uses: Andrey0800770/kernel_build_action@main
       with:
-          kernel-url: https://github.com/Andrey0800770/samsung_sdm845-kernel
+          kernel-url: https://github.com/ananjaser1211/Apollo.git
           kernel-dir: sdm845
-          kernel-branch: clang
-          config: star2qlte_chn_open_defconfig
+          kernel-branch: Apollo
+          config: star2lte_defconfig
           arch: arm64
           clang-url: https://github.com/Klozz/Yuki-clang
           path: $CLANG:$PATH
