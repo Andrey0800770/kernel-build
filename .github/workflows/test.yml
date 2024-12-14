@@ -1,0 +1,27 @@
+# A simple action usage
+name: Build Kernel DEV
+on:
+  workflow_dispatch:
+
+jobs:
+  Build-Kernel:
+    strategy:
+      fail-fast: false
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+    - name: Build Kernel
+      uses: Andrey0800770/kernel_build_action@main
+      with:
+          kernel-url: https://github.com/Andrey0800770/samsung_sdm845-kernel
+          kernel-dir: sdm845
+          kernel-branch: dev
+          config: star2qlte_chn_open_defconfig
+          arch: arm64
+          gcc64-tar: https://developer.arm.com/-/media/Files/downloads/gnu-a/8.2-2018.08/gcc-arm-8.2-2018.08-x86_64-aarch64-linux-gnu.tar.xz
+          path: $HOME/gcc64/gcc-arm-8.2-2018.08-x86_64-aarch64-linux-gnu/bin:$PATH
+          make-options: "make -j$(nproc --all) CROSS_COMPILE=aarch64-linux-gnu- O=out ARCH=arm64"
+          python: python2
+          anykernel3: true
