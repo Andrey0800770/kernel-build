@@ -19,8 +19,8 @@ jobs:
           kernel-branch: KSU
           config: star2qlte_chn_open_defconfig
           arch: arm64
-          gcc64-tar: https://developer.arm.com/-/media/Files/downloads/gnu-a/8.3-2019.03/binrel/gcc-arm-8.3-2019.03-x86_64-aarch64-linux-gnu.tar.xz
-          path: $HOME/gcc64/gcc-arm-8.3-2019.03-x86_64-aarch64-linux-gnu/bin:$PATH
+          gcc64-tar: https://developer.arm.com/-/media/Files/downloads/gnu-a/9.2-2019.12/binrel/gcc-arm-9.2-2019.12-x86_64-aarch64-none-linux-gnu.tar.xz
+          path: $HOME/gcc64/gcc-arm-9.2-2019.12-x86_64-aarch64-none-linux-gnu/bin:$PATH
           make-options: "make -j$(nproc --all) CROSS_COMPILE=aarch64-linux-gnu- O=out ARCH=arm64"
           python: python2
           anykernel3: true
