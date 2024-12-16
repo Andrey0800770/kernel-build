@@ -1,4 +1,4 @@
-name: Build With Proton-DEV
+name: Build With Clang-DEV
 on:
   workflow_dispatch:
 
