@@ -20,7 +20,7 @@ jobs:
           config: star2qlte_chn_open_defconfig
           arch: arm64
           clang-tar: https://github.com/ZyCromerZ/Clang/releases/download/20.0.0git-20241215-release/Clang-20.0.0git-20241215.tar.gz
-          path: $HOME/clang/Clang-20.0.0git-20241215/bin:$PATH
+          path: $HOME/clang/bin:$PATH
           make-options: "make CC=clang -j$(nproc --all) CROSS_COMPILE=aarch64-linux-gnu- O=out ARCH=arm64"
           python: python2
           anykernel3: true
