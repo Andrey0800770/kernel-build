@@ -20,7 +20,7 @@ jobs:
           config: star2qlte_chn_open_defconfig
           arch: arm64
           clang-tar: https://github.com/llvm/llvm-project/releases/download/llvmorg-19.1.5/clang+llvm-19.1.5-aarch64-linux-gnu.tar.xz
-          path: $HOME/clang+llvm-19.1.5-aarch64-linux-gnu/bin:$PATH
+          path: $HOME/clang/clang+llvm-19.1.5-aarch64-linux-gnu/bin:$PATH
           make-options: "make CC=clang -j$(nproc --all) CROSS_COMPILE=aarch64-linux-gnu- O=out ARCH=arm64"
           python: python2
           anykernel3: true
