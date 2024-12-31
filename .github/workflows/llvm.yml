@@ -21,6 +21,6 @@ jobs:
           arch: arm64
           clang-url: https://gitlab.com/ZyCromerZ/sdclang-16.1.0.1.git
           path: $CLANG:$PATH
-          make-options: "make CC=clang -j$(nproc --all) CROSS_COMPILE=aarch64-linux-gnu- O=out ARCH=arm64"
+          cflags: "CROSS_COMPILE=aarch64-linux-gnu-"
           python: python2
           anykernel3: true
