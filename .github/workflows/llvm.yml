@@ -19,9 +19,8 @@ jobs:
           kernel-branch: ksu+susfs
           config: star2qlte_chn_open_defconfig
           arch: arm64
-          gcc64-url: https://github.com/LineageOS/android_prebuilts_gcc_linux-x86_aarch64_aarch64-linux-android-4.9.git
           clang-url: https://gitlab.com/ZyCromerZ/sdclang-16.1.0.1.git
           path: $CLANG:$GCC64:$PATH
-          cflags: "CC=clang CROSS_COMPILE=aarch64-linux-android- CLANG_TRIPLE=aarch64-linux-gnu-"
+          cflags: "CC=clang CROSS_COMPILE=aarch64-linux-gnu- CLANG_TRIPLE=aarch64-linux-gnu-"
           python: python2
           anykernel3: true
