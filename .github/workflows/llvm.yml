@@ -19,7 +19,7 @@ jobs:
           kernel-branch: ksu+susfs
           config: star2qlte_chn_open_defconfig
           arch: arm64
-          clang-tar: https://android.googlesource.com/platform/prebuilts/clang/host/linux-x86/+archive/refs/heads/main/clang-r536225.tar.gz
+          clang-tar: https://android.googlesource.com/platform/prebuilts/clang/host/linux-x86/+archive/refs/heads/main/clang-r522817.tar.gz
           path: $CLANG:$PATH
           make-options: "make CC=clang -j$(nproc --all) CROSS_COMPILE=aarch64-linux-android- O=out ARCH=arm64"
           python: python2
