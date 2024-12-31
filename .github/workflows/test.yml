@@ -24,3 +24,4 @@ jobs:
           make-options: "make -j$(nproc --all) CROSS_COMPILE=aarch64-none-linux-gnu- O=out ARCH=arm64"
           python: python2
           anykernel3: true
+          extra-version: starshine
