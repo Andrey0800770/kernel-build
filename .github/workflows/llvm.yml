@@ -16,11 +16,11 @@ jobs:
       with:
           kernel-url: https://github.com/Andrey0800770/samsung_sdm845-kernel
           kernel-dir: sdm845
-          kernel-branch: debug
+          kernel-branch: ksu+susfs
           config: star2qlte_chn_open_defconfig
           arch: arm64
-          clang-tar: https://android.googlesource.com/platform/prebuilts/clang/host/linux-x86/+archive/refs/heads/main/clang-r522817.tar.gz
+          clang-url: https://gitlab.com/ZyCromerZ/sdclang-16.1.0.1.git
           path: $CLANG:$PATH
-          make-options: "make CC=clang -j$(nproc --all) CLANG_TRIPLE=aarch64-linux-gnu- O=out ARCH=arm64"
+          make-options: "make CC=clang -j$(nproc --all) CROSS_COMPILE=aarch64-linux-gnu- O=out ARCH=arm64"
           python: python2
           anykernel3: true
