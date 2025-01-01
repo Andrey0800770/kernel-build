@@ -1,4 +1,4 @@
-name: Clang 20 Build
+name: star2qlte
 on:
   workflow_dispatch:
 
