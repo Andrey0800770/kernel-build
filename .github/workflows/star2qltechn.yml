@@ -19,8 +19,8 @@ jobs:
           kernel-branch: main
           config: star2qlte_usa_single_defconfig
           arch: arm64
-          gcc64-tar: http://releases.linaro.org/components/toolchain/binaries/7.5-2019.12/aarch64-elf/gcc-linaro-7.5.0-2019.12-x86_64_aarch64-elf.tar.xz
-          path: $HOME/gcc64/gcc-linaro-7.5.0-2019.12-x86_64_aarch64-elf/bin:$PATH
-          cflags: "CROSS_COMPILE=aarch64-elf-"
+          gcc64-tar: https://developer.arm.com/-/media/Files/downloads/gnu/14.2.rel1/binrel/arm-gnu-toolchain-14.2.rel1-x86_64-aarch64-none-linux-gnu.tar.xz
+          path: $HOME/gcc64/arm-gnu-toolchain-14.2.rel1-x86_64-aarch64-none-linux-gnu/bin:$PATH
+          cflags: "CROSS_COMPILE=aarch64-none-linux-gnu-"
           python: python2
           anykernel3: true
