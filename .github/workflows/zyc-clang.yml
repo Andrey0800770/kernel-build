@@ -21,6 +21,6 @@ jobs:
           arch: arm64
           clang-tar: https://github.com/ZyCromerZ/Clang/releases/download/20.0.0git-20250102-release/Clang-20.0.0git-20250102.tar.gz
           path: $CLANG:$PATH
-          cflags: "CC=clang CROSS_COMPILE=aarch64-linux-gnu-"
+          cflags: "CC=clang CROSS_COMPILE=aarch64-linux-gnu- LD=$HOME/clang/aarch64-linux-gnu/bin/ld.gold"
           python: python2
           anykernel3: true
