@@ -10,32 +10,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
       
-      # Executa a primeira ação
-      - name: Run action 1
-        run: |
-          echo "Running star2qltechn"
-          ./devices/star2qltechn.yml
+      - name: Run crownqltechn workflow
+        uses: ./.github/workflows/devices/crownqltechn.yml
 
-      # Executa a segunda ação
-      - name: Run action 2
-        run: |
-          echo "Running starqltechn"
-          ./devices/starqltechn.yml
-
-      # Executa a terceira ação
-      - name: Run action 3
-        run: |
-          echo "Running star2qlte"
-          ./devices/star2qlte.yml
-
-      # Executa a quarta ação
-      - name: Run action 4
-        run: |
-          echo "Running starqlte"
-          ./devices/starqlte.yml
-
-      # Executa a quinta ação
-      - name: Run action 5
-        run: |
-          echo "Running crownqltechn"
-          ./devices/crownqltechn.yml
+    
