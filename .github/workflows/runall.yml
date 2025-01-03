@@ -6,9 +6,6 @@ jobs:
   run-multiple-actions:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-
       - name: Run action 1
         uses: ./devices/star2qltechn.yml
 
