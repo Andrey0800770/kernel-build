@@ -7,36 +7,35 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # Checkout do repositório para garantir que os arquivos estejam disponíveis
       - name: Checkout repository
         uses: actions/checkout@v2
-
+      
       # Executa a primeira ação
       - name: Run action 1
         run: |
-          cp .github/workflows/devices/star2qltechn.yml ./action.yml
-          act -j action.yml
+          echo "Running star2qltechn"
+          ./devices/star2qltechn.yml
 
       # Executa a segunda ação
       - name: Run action 2
         run: |
-          cp .github/workflows/devices/starqltechn.yml ./action.yml
-          act -j action.yml
+          echo "Running starqltechn"
+          ./devices/starqltechn.yml
 
       # Executa a terceira ação
       - name: Run action 3
         run: |
-          cp .github/workflows/devices/star2qlte.yml ./action.yml
-          act -j action.yml
+          echo "Running star2qlte"
+          ./devices/star2qlte.yml
 
       # Executa a quarta ação
       - name: Run action 4
         run: |
-          cp .github/workflows/devices/starqlte.yml ./action.yml
-          act -j action.yml
+          echo "Running starqlte"
+          ./devices/starqlte.yml
 
       # Executa a quinta ação
       - name: Run action 5
         run: |
-          cp .github/workflows/devices/crownqltechn.yml ./action.yml
-          act -j action.yml
+          echo "Running crownqltechn"
+          ./devices/crownqltechn.yml
