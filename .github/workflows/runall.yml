@@ -13,20 +13,30 @@ jobs:
 
       # Executa a primeira ação
       - name: Run action 1
-        uses: ./.github/actions/devices/star2qltechn.yml
+        run: |
+          cp .github/workflows/devices/star2qltechn.yml ./action.yml
+          act -j action.yml
 
       # Executa a segunda ação
       - name: Run action 2
-        uses: ./.github/actions/devices/starqltechn.yml
+        run: |
+          cp .github/workflows/devices/starqltechn.yml ./action.yml
+          act -j action.yml
 
       # Executa a terceira ação
       - name: Run action 3
-        uses: ./.github/actions/devices/star2qlte.yml
+        run: |
+          cp .github/workflows/devices/star2qlte.yml ./action.yml
+          act -j action.yml
 
       # Executa a quarta ação
       - name: Run action 4
-        uses: ./.github/actions/devices/starqlte.yml
+        run: |
+          cp .github/workflows/devices/starqlte.yml ./action.yml
+          act -j action.yml
 
       # Executa a quinta ação
       - name: Run action 5
-        uses: ./.github/actions/devices/crownqltechn.yml
+        run: |
+          cp .github/workflows/devices/crownqltechn.yml ./action.yml
+          act -j action.yml
