@@ -3,9 +3,16 @@ name: Run Multiple Actions
 on: [push, workflow_dispatch]
 
 jobs:
-  job1:
+  build:
     strategy:
       fail-fast: false
+      matrix:
+        config:
+          - star2qlte_chn_open_defconfig
+          - starqlte_chn_open_defconfig
+          - starqlte_usa_single_defconfig
+          - star2qlte_usa_single_defconfig
+          - crownqlte_chn_open_defconfig
     runs-on: ubuntu-22.04
     permissions:
       contents: read
@@ -13,109 +20,13 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
         
-      - name: Run action 1
+      - name: Run kernel build action
         uses: Andrey0800770/kernel_build_action@main
         with:
           kernel-url: https://github.com/Andrey0800770/samsung_sdm845-kernel
           kernel-dir: sdm845
           kernel-branch: ksu+susfs
-          config: star2qlte_chn_open_defconfig
-          arch: arm64
-          clang-tar: https://github.com/ZyCromerZ/Clang/releases/download/20.0.0git-20250103-release/Clang-20.0.0git-20250103.tar.gz
-          path: $CLANG:$PATH
-          cflags: "CC=clang CROSS_COMPILE=aarch64-linux-gnu-"
-          python: python2
-          anykernel3: true
-
-  job2:
-    strategy:
-      fail-fast: false
-    runs-on: ubuntu-22.04
-    permissions:
-      contents: read
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
-        
-      - name: Run action 2
-        uses: Andrey0800770/kernel_build_action@main
-        with:
-          kernel-url: https://github.com/Andrey0800770/samsung_sdm845-kernel
-          kernel-dir: sdm845
-          kernel-branch: ksu+susfs
-          config: starqlte_chn_open_defconfig
-          arch: arm64
-          clang-tar: https://github.com/ZyCromerZ/Clang/releases/download/20.0.0git-20250103-release/Clang-20.0.0git-20250103.tar.gz
-          path: $CLANG:$PATH
-          cflags: "CC=clang CROSS_COMPILE=aarch64-linux-gnu-"
-          python: python2
-          anykernel3: true
-
-  job3:
-    strategy:
-      fail-fast: false
-    runs-on: ubuntu-22.04
-    permissions:
-      contents: read
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
-        
-      - name: Run action 3
-        uses: Andrey0800770/kernel_build_action@main
-        with:
-          kernel-url: https://github.com/Andrey0800770/samsung_sdm845-kernel
-          kernel-dir: sdm845
-          kernel-branch: ksu+susfs
-          config: star2qlte_chn_open_defconfig
-          arch: arm64
-          clang-tar: https://github.com/ZyCromerZ/Clang/releases/download/20.0.0git-20250103-release/Clang-20.0.0git-20250103.tar.gz
-          path: $CLANG:$PATH
-          cflags: "CC=clang CROSS_COMPILE=aarch64-linux-gnu-"
-          python: python2
-          anykernel3: true
-
-  job4:
-    strategy:
-      fail-fast: false
-    runs-on: ubuntu-22.04
-    permissions:
-      contents: read
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
-        
-      - name: Run action 4
-        uses: Andrey0800770/kernel_build_action@main
-        with:
-          kernel-url: https://github.com/Andrey0800770/samsung_sdm845-kernel
-          kernel-dir: sdm845
-          kernel-branch: ksu+susfs
-          config: starqlte_usa_single_defconfig
-          arch: arm64
-          clang-tar: https://github.com/ZyCromerZ/Clang/releases/download/20.0.0git-20250103-release/Clang-20.0.0git-20250103.tar.gz
-          path: $CLANG:$PATH
-          cflags: "CC=clang CROSS_COMPILE=aarch64-linux-gnu-"
-          python: python2
-          anykernel3: true
-
-  job5:
-    strategy:
-      fail-fast: false
-    runs-on: ubuntu-22.04
-    permissions:
-      contents: read
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
-        
-      - name: Run action 5
-        uses: Andrey0800770/kernel_build_action@main
-        with:
-          kernel-url: https://github.com/Andrey0800770/samsung_sdm845-kernel
-          kernel-dir: sdm845
-          kernel-branch: ksu+susfs
-          config: crownqlte_chn_open_defconfig
+          config: ${{ matrix.config }}
           arch: arm64
           clang-tar: https://github.com/ZyCromerZ/Clang/releases/download/20.0.0git-20250103-release/Clang-20.0.0git-20250103.tar.gz
           path: $CLANG:$PATH
