@@ -1,0 +1,25 @@
+name: Compile all devices
+
+on: [push]
+
+jobs:
+  run-multiple-actions:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Run action 1
+        uses: ./devices/star2qltechn.yml
+
+      - name: Run action 2
+        uses: ./devices/starqltechn.yml
+
+      - name: Run action 3
+        uses: ./devices/star2qlte.yml
+
+      - name: Run action 4
+        uses: ./devices/starqlte.yml
+
+      - name: Run action 5
+        uses: ./devices/crownqltechn.yml
