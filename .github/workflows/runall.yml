@@ -1,16 +1,49 @@
-name: Compile all devices
+name: Run Multiple Actions
 
 on: [push]
 
 jobs:
-  run-multiple-actions:
+  job1:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
-      
-      - name: Run crownqltechn workflow
-        uses: ./.github/workflows/devices/crownqltechn.yml
 
-    
+      - name: Run action 1
+        uses: ./devices/star2qltechn.yml
+
+  job2:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Run action 2
+        uses: ./devices/starqltechn.yml
+
+  job3:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Run action 3
+        uses: ./devices/star2qlte.yml
+
+  job4:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Run action 4
+        uses: ./devices/starqlte.yml
+
+  job5:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Run action 5
+        uses: ./devices/crownqltechn.yml
