@@ -17,7 +17,7 @@ jobs:
           kernel-url: https://github.com/Andrey0800770/samsung_sdm845-kernel
           kernel-dir: sdm845
           kernel-branch: ksu+susfs
-          config: star2qlte_chn_open_defconfig
+          config: crownqlte_chn_open_defconfig
           arch: arm64
           gcc64-tar: https://developer.arm.com/-/media/Files/downloads/gnu/14.2.rel1/binrel/arm-gnu-toolchain-14.2.rel1-x86_64-aarch64-none-linux-gnu.tar.xz
           path: $HOME/gcc64/arm-gnu-toolchain-14.2.rel1-x86_64-aarch64-none-linux-gnu/bin:$PATH
