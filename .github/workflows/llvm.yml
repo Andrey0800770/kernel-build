@@ -21,6 +21,6 @@ jobs:
           arch: arm64
           gcc64-tar: http://releases.linaro.org/components/toolchain/binaries/7.5-2019.12/aarch64-elf/gcc-linaro-7.5.0-2019.12-x86_64_aarch64-elf.tar.xz
           path: $HOME/gcc64/gcc-linaro-7.5.0-2019.12-x86_64_aarch64-elf/bin:$PATH
-          cmake: "CROSS_COMPILE=aarch64-elf-"
+          cflags: "CROSS_COMPILE=aarch64-elf-"
           python: python2
           anykernel3: true
