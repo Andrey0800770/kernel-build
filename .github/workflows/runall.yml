@@ -1,4 +1,4 @@
-name: Run Multiple Actions
+name: Compile All S9/S9+ kernels
 
 on: [workflow_dispatch]
 
@@ -12,7 +12,6 @@ jobs:
           - starqlte_chn_open_defconfig
           - starqlte_usa_single_defconfig
           - star2qlte_usa_single_defconfig
-          - crownqlte_chn_open_defconfig
     runs-on: ubuntu-22.04
     permissions:
       contents: read
