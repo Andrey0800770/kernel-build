@@ -17,7 +17,7 @@ jobs:
           kernel-url: https://github.com/Andrey0800770/samsung_sdm845-kernel
           kernel-dir: sdm845
           kernel-branch: v4.9.186-susfs
-          config: starqlte_chn_open_defconfig
+          config: starqlte_jpn_defconfig
           arch: arm64
           clang-tar: https://github.com/ZyCromerZ/Clang/releases/download/20.0.0git-20250127-release/Clang-20.0.0git-20250127.tar.gz
           path: $CLANG:$PATH
