@@ -12,6 +12,7 @@ jobs:
           - starqlte_chn_open_defconfig
           - starqlte_usa_single_defconfig
           - star2qlte_usa_single_defconfig
+          - starqlte_jpn_defconfig
     runs-on: ubuntu-22.04
     permissions:
       contents: read
@@ -27,7 +28,7 @@ jobs:
           kernel-branch: ksu+susfs
           config: ${{ matrix.config }}
           arch: arm64
-          clang-tar: https://github.com/ZyCromerZ/Clang/releases/download/20.0.0git-20250126-release/Clang-20.0.0git-20250126.tar.gz
+          clang-tar: https://github.com/ZyCromerZ/Clang/releases/download/20.0.0git-20250127-release/Clang-20.0.0git-20250127.tar.gz
           path: $CLANG:$PATH
           cflags: "CC=clang CROSS_COMPILE=aarch64-linux-gnu-"
           python: python2
