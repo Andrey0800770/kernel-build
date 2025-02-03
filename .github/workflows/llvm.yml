@@ -21,6 +21,6 @@ jobs:
           arch: arm64
           clang-tar: https://android.googlesource.com/platform/prebuilts/clang/host/linux-x86/+archive/98d3c628eaa366985d4212905bfdb35a47962e37/clang-r547379.tar.gz
           path: $CLANG:$PATH
-          cflags: "CC=clang CROSS_COMPILE=aarch64-linux-gnu-"
+          cflags: "CC=clang AS=llvm-as CROSS_COMPILE=aarch64-linux-gnu-"
           python: python2
           anykernel3: true
