@@ -33,4 +33,4 @@ jobs:
           cflags: "CC=clang CROSS_COMPILE=aarch64-linux-gnu-"
           python: python2
           anykernel3: true
-          extra-version: -Rel4
+          extra-version: -Rel5
