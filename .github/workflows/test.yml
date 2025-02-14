@@ -13,60 +13,19 @@ jobs:
 
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v2
+      uses: actions/checkout@v4.2.0
 
     - name: Set up cache for kernel
       id: kernel-cache
-      uses: actions/cache@v2
+      uses: actions/cache@v4.2.0
       with:
         path: sdm845
         key: ksu-susfs
         restore-keys: |
           ksu-susfs
 
-    - name: Set up cache for clang
-      id: clang-cache
-      uses: actions/cache@v2
-      with:
-        path: /home/runner/clang
-        key: google-clang-20
-        restore-keys: |
-          google-clang-20
-
     - name: Download and extract kernel
       if: steps.kernel-cache.outputs.cache-hit != 'true'
       run: |
         git clone --branch ksu+susfs https://github.com/Andrey0800770/samsung_sdm845-kernel sdm845
-
-    - name: Download and extract clang
-      if: steps.clang-cache.outputs.cache-hit != 'true'
-      run: |
-        mkdir -p /home/runner/clang
-        curl -L https://android.googlesource.com/platform/prebuilts/clang/host/linux-x86/+archive/68e751fd442387fe6dda44199f2b35613bd65803/clang-r547379.tar.gz | tar -xz -C /home/runner/clang
-
-    - name: Build Kernel
-      uses: Andrey0800770/kernel_build_action@main
-      with:
-        kernel-url: abc
-        kernel-dir: sdm845
-        kernel-branch: ksu+susfs
-        config: star2qlte_chn_open_defconfig
-        arch: arm64
-        path: /home/runner/clang/bin:$PATH
-        cflags: "CC=clang CROSS_COMPILE=aarch64-linux-gnu-"
-        python: python2
-        anykernel3: true
-
-    - name: Save kernel cache
-      if: always()
-      uses: actions/cache@v2
-      with:
-        path: sdm845
-        key: ksu-susfs
-
-    - name: Save clang cache
-      if: always()
-      uses: actions/cache@v2
-      with:
-        path: /home/runner/clang
-        key: google-clang-20
+        pwd
