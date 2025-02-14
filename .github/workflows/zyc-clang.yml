@@ -1,4 +1,4 @@
-name: Clang 20 Build
+name: Zyc Clang
 on:
   workflow_dispatch:
 
