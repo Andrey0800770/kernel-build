@@ -19,7 +19,7 @@ jobs:
           kernel-branch: main
           config: star2qlte_chn_open_defconfig
           arch: arm64
-          gcc64-tar: https://github.com/mvaisakh/gcc-build/releases/download/140220240239/eva-gcc-arm64-140220240239.xz
+          gcc64-tar: https://github.com/mvaisakh/gcc-build/releases/download/13022025/eva-gcc-arm64-13022025.xz
           path: $HOME/gcc64/gcc-arm64/bin:$PATH
           cflags: "CROSS_COMPILE=aarch64-elf-"
           python: python2
