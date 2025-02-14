@@ -1,0 +1,27 @@
+name: Install Python 2 and List Packages
+
+on: [push]
+
+jobs:
+  install-python2:
+    runs-on: ubuntu-22.04
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Update package list
+        run: |
+          sudo apt-get update
+
+      - name: List dependencies for Python 2
+        run: |
+          apt-cache depends python2
+
+      - name: Install Python 2
+        run: |
+          sudo apt-get install --no-install-recommends -y python2
+
+      - name: Verify Python 2 installation
+        run: |
+          python2 --version
