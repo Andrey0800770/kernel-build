@@ -1,4 +1,4 @@
-name: Test CLANG
+name: Google CLANG
 
 on:
   workflow_dispatch:
@@ -16,33 +16,33 @@ jobs:
       uses: actions/checkout@v2
 
     - name: Set up cache for kernel
+      id: kernel-cache
       uses: actions/cache@v2
       with:
-        path: |
-          sdm845
+        path: sdm845
         key: ${{ runner.os }}-kernel-${{ hashFiles('**/kernel-url') }}
         restore-keys: |
           ${{ runner.os }}-kernel-
 
     - name: Set up cache for clang
+      id: clang-cache
       uses: actions/cache@v2
       with:
-        path: |
-          /usr/local/clang
+        path: ${{ runner.temp }}/clang
         key: ${{ runner.os }}-clang-${{ hashFiles('**/clang-tar') }}
         restore-keys: |
           ${{ runner.os }}-clang-
 
     - name: Download and extract kernel
-      if: steps.cache.outputs.cache-hit != 'true'
+      if: steps.kernel-cache.outputs.cache-hit != 'true'
       run: |
         git clone --branch ksu+susfs https://github.com/Andrey0800770/samsung_sdm845-kernel sdm845
 
     - name: Download and extract clang
-      if: steps.cache.outputs.cache-hit != 'true'
+      if: steps.clang-cache.outputs.cache-hit != 'true'
       run: |
-        mkdir -p /usr/local/clang
-        curl -L https://android.googlesource.com/platform/prebuilts/clang/host/linux-x86/+archive/68e751fd442387fe6dda44199f2b35613bd65803/clang-r547379.tar.gz | tar -xz -C /usr/local/clang
+        mkdir -p ${{ runner.temp }}/clang
+        curl -L https://android.googlesource.com/platform/prebuilts/clang/host/linux-x86/+archive/68e751fd442387fe6dda44199f2b35613bd65803/clang-r547379.tar.gz | tar -xz -C ${{ runner.temp }}/clang
 
     - name: Build Kernel
       uses: Andrey0800770/kernel_build_action@main
@@ -53,7 +53,7 @@ jobs:
         config: star2qlte_chn_open_defconfig
         arch: arm64
         clang-tar: https://android.googlesource.com/platform/prebuilts/clang/host/linux-x86/+archive/68e751fd442387fe6dda44199f2b35613bd65803/clang-r547379.tar.gz
-        path: $CLANG:$PATH
+        path: ${{ runner.temp }}/clang/bin:$PATH
         cflags: "CC=clang CROSS_COMPILE=aarch64-linux-gnu-"
         python: python2
         anykernel3: true
