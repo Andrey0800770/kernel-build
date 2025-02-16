@@ -34,15 +34,21 @@ jobs:
       uses: actions/cache@v4.2.0
       with:
         path: /home/runner/clang
-        key: googleclang-20
+        key: clang-r547379
         restore-keys: |
-          googleclang-20
-          
+          clang-r547379
+      
+    - name: Download and extract kernel
+      if: steps.clang-cache.outputs.cache-hit != 'true'
+      run: |
+        mkdir -p /home/runner/clang
+        curl -L https://android.googlesource.com/platform/prebuilts/clang/host/linux-x86/+archive/d19c99c180cfa21504426915d765b5e7adf878b6/clang-r547379.tar.gz | tar -xz -C /home/runner/clang
+
     - name: Build Kernel
       uses: Andrey0800770/kernel_build_action@main
       with:
        kernel-dir: sdm845
-       kernel-branch: test
+       kernel-branch: ksu+susfs
        config: star2qlte_chn_open_defconfig
        arch: arm64
        path: /home/runner/clang/bin:$BINUTILS:$PATH
