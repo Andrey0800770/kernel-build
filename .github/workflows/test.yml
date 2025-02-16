@@ -20,7 +20,7 @@ jobs:
       uses: actions/cache@v4.2.0
       with:
         path: kernel/sdm845
-        key: main-1602
+        key: main-160225
         restore-keys: |
           main
 
@@ -28,7 +28,7 @@ jobs:
       if: steps.kernel-cache.outputs.cache-hit
       run: |
         rm -rf kernel/sdm845
-        git clone --recursive https://github.com/Andrey0800770/samsung_sdm845-kernel -b main --depth=1 kernel/sdm845        
+        git clone --recursive https://github.com/Andrey0800770/samsung_sdm845-kernel -b main kernel/sdm845  
                
     - name: Set-Up clang cache
       id: clang-cache
@@ -37,12 +37,4 @@ jobs:
         path: /home/runner/clang
         key: clang-r547379
         restore-keys: |
-          clang-r547379
-      
-    - name: Downloading and extracting Clang
-      if: steps.clang-cache.outputs.cache-hit
-      run: |
-        rm -rf /home/runner/clang
-        mkdir -p /home/runner/clang
-        URL=https://android.googlesource.com/platform/prebuilts/clang/host/linux-x86/+archive/d19c99c180cfa21504426915d765b5e7adf878b6/clang-r547379.tar.gz
-        curl -L $URL -o "clang.tar" && tar -xz -C /home/runner/clang -f "clang.tar"
+          clang-r547379"
