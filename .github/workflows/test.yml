@@ -25,10 +25,11 @@ jobs:
           main
 
     - name: Downloading kernel
+      if: steps.kernel-cache.outputs.cache-hit = 'true'
       run: |
         rm -rf kernel/sdm845
         git clone --recursive https://github.com/Andrey0800770/samsung_sdm845-kernel -b main --depth=1 kernel/sdm845        
-        
+               
     - name: Set-Up clang cache
       id: clang-cache
       uses: actions/cache@v4.2.0
@@ -39,6 +40,7 @@ jobs:
           clang-r547379
       
     - name: Downloading and extracting Clang
+      if: steps.clang-cache.outputs.cache-hit = 'true'
       run: |
         rm -rf /home/runner/clang
         mkdir -p /home/runner/clang
