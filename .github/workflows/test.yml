@@ -43,4 +43,5 @@ jobs:
        path: /home/runner/clang/bin:$PATH
        cflags: "CC=clang CROSS_COMPILE=aarch64-linux-gnu- LLVM=1"
        python: python2
+       llvm: 1
        anykernel3: true
