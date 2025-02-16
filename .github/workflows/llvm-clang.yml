@@ -31,8 +31,7 @@ jobs:
        kernel-branch: ksu+susfs
        config: star2qlte_chn_open_defconfig
        arch: arm64
-       clang-tar: https://github.com/llvm/llvm-project/releases/download/llvmorg-18.1.8/clang+llvm-18.1.8-x86_64-linux-gnu-ubuntu-18.04.tar.xz
-       path: $HOME/clang/clang+llvm-18.1.8-x86_64-linux-gnu-ubuntu-18.04:$BINUTILS:$PATH
+       path: $BINUTILS:$PATH
        cflags: "CC=clang CROSS_COMPILE=aarch64-linux-gnu-"
        python: python2
        llvm: 1
