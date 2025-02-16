@@ -19,10 +19,15 @@ jobs:
       id: kernel-cache
       uses: actions/cache@v4.2.0
       with:
-        path: sdm845
-        key: ksu-susfs
+        path: kernel/sdm845
+        key: main
         restore-keys: |
-          ksu-susfs
+          main
+
+    - name: Download and extract kernel
+      if: steps.kernel-cache.outputs.cache-hit != 'true'
+      run: |
+        git clone --branch main https://github.com/Andrey0800770/samsung_sdm845-kernel kernel/sdm845        
           
     - name: Set up cache for clang
       id: clang-cache
