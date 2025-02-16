@@ -40,8 +40,8 @@ jobs:
        kernel-branch: test
        config: star2qlte_chn_open_defconfig
        arch: arm64
-       path: /home/runner/clang/bin:$PATH
-       cflags: "CC=clang CROSS_COMPILE=aarch64-linux-gnu- LLVM=1"
+       path: /home/runner/clang/bin:$BINUTILS:$PATH
+       cflags: "CC=clang CROSS_COMPILE=aarch64-linux-gnu-"
        python: python2
        llvm: 1
        anykernel3: true
