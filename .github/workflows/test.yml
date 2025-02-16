@@ -28,7 +28,7 @@ jobs:
       if: steps.kernel-cache.outputs.cache-hit != 'true'
       run: |
         git clone --branch main https://github.com/Andrey0800770/samsung_sdm845-kernel kernel/sdm845        
-          
+        
     - name: Set-Up clang cache
       id: clang-cache
       uses: actions/cache@v4.2.0
@@ -42,8 +42,8 @@ jobs:
       if: steps.clang-cache.outputs.cache-hit != 'true'
       run: |
         mkdir -p /home/runner/clang
-        curl -L https://android.googlesource.com/platform/prebuilts/clang/host/linux-x86/+archive/d19c99c180cfa21504426915d765b5e7adf878b6/clang-r547379.tar.gz | tar -xz -C /home/runner/clang
-
+        curl -L https://android.googlesource.com/platform/prebuilts/clang/host/linux-x86/+archive/d19c99c180cfa21504426915d765b5e7adf878b6/clang-r547379.tar.gz -o "clang.tar" && tar -xz -C /home/runner/clang -f "clang.tar"
+        
     - name: Build Kernel
       uses: Andrey0800770/kernel_build_action@main
       with:
