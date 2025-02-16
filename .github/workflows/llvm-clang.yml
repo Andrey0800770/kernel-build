@@ -1,0 +1,39 @@
+name: LLVM CLANG
+
+on:
+  workflow_dispatch:
+
+jobs:
+  Build-Kernel:
+    strategy:
+      fail-fast: false
+    runs-on: ubuntu-22.04
+    permissions:
+      contents: read
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4.2.0
+
+    - name: Set-up cache for kernel
+      id: kernel-cache
+      uses: actions/cache@v4.2.0
+      with:
+        path: kernel/sdm845
+        key: main-160225
+        restore-keys: |
+          main
+                      
+    - name: Build Kernel
+      uses: Andrey0800770/kernel_build_action@main
+      with:
+       kernel-dir: sdm845
+       kernel-branch: ksu+susfs
+       config: star2qlte_chn_open_defconfig
+       arch: arm64
+       clang-tar: https://github.com/llvm/llvm-project/releases/download/llvmorg-18.1.8/clang+llvm-18.1.8-x86_64-linux-gnu-ubuntu-18.04.tar.xz
+       path: $HOME/clang/clang+llvm-18.1.8-x86_64-linux-gnu-ubuntu-18.04:$BINUTILS:$PATH
+       cflags: "CC=clang CROSS_COMPILE=aarch64-linux-gnu-"
+       python: python2
+       llvm: 1
+       anykernel3: true
