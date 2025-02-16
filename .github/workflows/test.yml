@@ -1,4 +1,4 @@
-name: Test CLANG
+name: Update Cache
 
 on:
   workflow_dispatch:
@@ -20,7 +20,7 @@ jobs:
       uses: actions/cache@v4.2.0
       with:
         path: kernel/sdm845
-        key: main
+        key: main-${{ github.run_id }}
         restore-keys: |
           main
 
@@ -34,7 +34,7 @@ jobs:
       uses: actions/cache@v4.2.0
       with:
         path: /home/runner/clang
-        key: clang-r547379
+        key: clang-r547379-${{ github.run_id }}
         restore-keys: |
           clang-r547379
       
@@ -43,16 +43,3 @@ jobs:
       run: |
         mkdir -p /home/runner/clang
         curl -L https://android.googlesource.com/platform/prebuilts/clang/host/linux-x86/+archive/d19c99c180cfa21504426915d765b5e7adf878b6/clang-r547379.tar.gz -o "clang.tar" && tar -xz -C /home/runner/clang -f "clang.tar"
-        
-    - name: Build Kernel
-      uses: Andrey0800770/kernel_build_action@main
-      with:
-       kernel-dir: sdm845
-       kernel-branch: ksu+susfs
-       config: star2qlte_chn_open_defconfig
-       arch: arm64
-       path: /home/runner/clang/bin:$BINUTILS:$PATH
-       cflags: "CC=clang CROSS_COMPILE=aarch64-linux-gnu-"
-       python: python2
-       llvm: 1
-       anykernel3: true
