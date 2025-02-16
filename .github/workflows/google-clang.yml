@@ -20,9 +20,9 @@ jobs:
       uses: actions/cache@v4.2.0
       with:
         path: kernel/sdm845
-        key: ksu+susfs
+        key: main-160225
         restore-keys: |
-          ksu+susfs
+          main
         
     - name: Set-Up clang cache
       id: clang-cache
