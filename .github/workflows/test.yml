@@ -20,7 +20,7 @@ jobs:
       uses: actions/cache@v4.2.0
       with:
         path: kernel/sdm845
-        key: main
+        key: main-1602
         restore-keys: |
           main
 
