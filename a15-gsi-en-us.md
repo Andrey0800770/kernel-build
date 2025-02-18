@@ -15,7 +15,7 @@
 ## How to Install
 
 ### Download
-- Download the Kernel: [Download](https://github.com/backslashxx/KernelSU/releases)
+- Download the Kernel: [Download](https://github.com/Andrey0800770/samsung_sdm845-kernel/releases)
 - Download the [Permissiver](https://sourceforge.net/projects/sgsi137/files/Permissiver%20v5.zip/download)
 - Download the GSI (I recommend installing the tested ones, as some GSIs are not working)
 - Download the [Android 15 Fix](https://github.com/Andrey0800770/kernel-build/raw/refs/heads/main/Android-15-Fix.zip)
