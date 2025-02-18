@@ -18,7 +18,7 @@ e baixe algum Navegador, porque o sistema vem sem nenhum. Instale os apks quando
 ## Como instalar
 ### Baixe:
 
-- Baixe o Kernel: [Download](https://github.com/backslashxx/KernelSU/releases)
+- Baixe o Kernel: [Download](https://github.com/Andrey0800770/samsung_sdm845-kernel/releases)
 - Baixe o [Permissiver](https://sourceforge.net/projects/sgsi137/files/Permissiver%20v5.zip/download)
 - Baixe a GSI (Recomendo instalar as testadas, pois algumas GSIs não estão funcionando)
 - Baixe o [Android 15 Fix](https://github.com/Andrey0800770/kernel-build/raw/refs/heads/main/Android-15-Fix.zip)
