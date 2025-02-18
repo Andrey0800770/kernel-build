@@ -6,7 +6,7 @@
 
 ### EvolutionX 10.3
 - [EvolutionX 10.3 Releases](https://github.com/mytja/treble_evo/releases)
-- To fix Samsung settings not appearing, install this module in KSU:
+- To fix Samsung features not appearing on PHH Settings, install this module in KSU: [Download](https://github.com/Andrey0800770/kernel-build/raw/refs/heads/main/TrebleGSIProps_1.1.zip)
 
 ### AOSP Treble
 - [AOSP Treble Releases](https://github.com/TrebleDroid/treble_experimentations/releases)
@@ -18,7 +18,7 @@
 - Download the Kernel: [Download](https://github.com/backslashxx/KernelSU/releases)
 - Download the [Permissiver](https://sourceforge.net/projects/sgsi137/files/Permissiver%20v5.zip/download)
 - Download the GSI (I recommend installing the tested ones, as some GSIs are not working)
-- Download the Android 15 Fix
+- Download the [Android 15 Fix](https://github.com/Andrey0800770/kernel-build/raw/refs/heads/main/Android-15-Fix.zip)
 
 ### Installation in TWRP
 - Backup (boot and vendor)
