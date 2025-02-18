@@ -1,33 +1,30 @@
-# Android 15 no Galaxy S9+/S9/N9 Snapdragon
-Aviso: O Android 15 esta na sua fase inicial de desenvolvimento, portanto todas as GSIs atualmente tem algum problema. Não instale achando que tudo estará funcionando ou que qualquer GSI funcionará.
--
-# GSIs Testadas:
+# Android 15 on Galaxy S9+/S9/N9 Snapdragon
 
-EvolutionX 10.3
--
-https://github.com/mytja/treble_evo/releases
-- Par corrigir o Samsung settings não aparecendo, instale esse modulo no KSU: 
+#### Warning: Android 15 is in its early development stage, so all GSIs currently have some issues. Do not install expecting everything to work or that any GSI will function perfectly.
 
+## Tested GSIs:
 
-AOSP Treble
--
-https://github.com/TrebleDroid/treble_experimentations/releases
-- Antes de instalar: baixe o [Google Webview](https://www.apkmirror.com/apk/google-inc/android-system-webview/android-system-webview-132-0-6834-165-release/android-system-webview-132-0-6834-165-android-apk-download/) e baixe algum Navegador, porque o sistema vem sem nenhum. Instale os apks quando iniciar a GSI
+### EvolutionX 10.3
+- [EvolutionX 10.3 Releases](https://github.com/mytja/treble_evo/releases)
+- To fix Samsung settings not appearing, install this module in KSU:
 
-# Como instalar
-Baixe
--
-- Baixe o Kernel:    [Download](https://github.com/backslashxx/KernelSU/releases)
-- Baixe o  [Permissiver](https://sourceforge.net/projects/sgsi137/files/Permissiver%20v5.zip/download)
-- Baixe a GSI (Recomendo instalar as testadas, pois algumas GSIs não estão funcionando)
-- Baixe o Android 15 Fix
+### AOSP Treble
+- [AOSP Treble Releases](https://github.com/TrebleDroid/treble_experimentations/releases)
+- Before installing: download [Google Webview](https://www.apkmirror.com/apk/google-inc/android-system-webview/android-system-webview-132-0-6834-165-release/android-system-webview-132-0-6834-165-androi...)
 
-Instalação no TWRP
--
-- Faça backup ( boot e vendor )
-- Instale o Kernel
-- Instale o Permissiver
-- Instale a GSI
-- Instale o Android 15 Fix ( isso irá modificar o vendor do seu dispositivo )
-- Formatar Data
-- Reiniciar para o Sistema (Talvez na primeira o inicialização o dispositivo reinicie, espere reiniciar, que irá iniciar normalmente.)
+## How to Install
+
+### Download
+- Download the Kernel: [Download](https://github.com/backslashxx/KernelSU/releases)
+- Download the [Permissiver](https://sourceforge.net/projects/sgsi137/files/Permissiver%20v5.zip/download)
+- Download the GSI (I recommend installing the tested ones, as some GSIs are not working)
+- Download the Android 15 Fix
+
+### Installation in TWRP
+- Backup (boot and vendor)
+- Install the Kernel
+- Install the Permissiver
+- Install the GSI
+- Install the Android 15 Fix (this will modify your device's vendor)
+- Format Data
+- Reboot to System (The device may restart on the first boot, wait for it to restart, and it will boot normally).
