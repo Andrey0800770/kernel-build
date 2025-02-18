@@ -6,7 +6,7 @@
 ### EvolutionX 10.3
 
 https://github.com/mytja/treble_evo/releases
-- Para corrigir o Samsung settings não aparecendo, instale este módulo no KSU: 
+- Para corrigir o Samsung Features não aparecendo no PHH Settings, instale este módulo no KSU: [Download](https://github.com/Andrey0800770/kernel-build/raw/refs/heads/main/TrebleGSIProps_1.1.zip)
 
 
 ### AOSP Treble
