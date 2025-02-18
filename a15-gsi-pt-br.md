@@ -1,8 +1,8 @@
 # Android 15 no Galaxy S9+/S9/N9 Snapdragon
 Aviso: O Android 15 esta na sua fase inicial de desenvolvimento, portanto todas as GSIs atualmente tem algum problema. Não instale achando que tudo estará funcionando ou que qualquer GSI funcionará.
 -
-GSIs Testadas:
-- 
+# GSIs Testadas:
+
 EvolutionX 10.3
 -
 https://github.com/mytja/treble_evo/releases
