@@ -3,7 +3,7 @@ Aviso: O Android 15 esta na sua fase inicial de desenvolvimento, portanto todas 
 -
 GSIs Testadas:
 - 
-- EvolutionX https://github.com/mytja/treble_evo/releases
+- EvolutionX 10.3 https://github.com/mytja/treble_evo/releases
 - AOSP Trebledroid https://github.com/TrebleDroid/treble_experimentations/releases
 
 # Como instalar
