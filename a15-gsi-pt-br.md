@@ -6,7 +6,7 @@
 ### EvolutionX 10.3
 
 https://github.com/mytja/treble_evo/releases
-- Par corrigir o Samsung settings não aparecendo, instale esse modulo no KSU: 
+- Para corrigir o Samsung settings não aparecendo, instale esse modulo no KSU: 
 
 
 ### AOSP Treble
