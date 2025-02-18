@@ -1,4 +1,4 @@
-# Android 15 on Galaxy S9+/S9/N9 Snapdragon
+# Android 15 on Galaxy S9+/S9 Snapdragon
 
 ### Warning: Android 15 is in its early development stage, so all GSIs currently have some issues. Do not install expecting everything to work or that any GSI will function perfectly.
 
