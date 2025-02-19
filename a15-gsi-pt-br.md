@@ -1,4 +1,4 @@
-# Android 15 no Galaxy S9+/S9 Snapdragon
+# Android 15 no Galaxy S9+/S9/N9 Snapdragon
 ### Aviso: O Android 15 está na sua fase inicial de desenvolvimento, portanto todas as GSIs atualmente têm algum problema. Não instale achando que tudo estará funcionando ou que qualquer GSI funcionará perfeitamente.
 
 ## GSIs Testadas:
@@ -21,9 +21,7 @@ e baixe algum Navegador, porque o sistema vem sem nenhum. Instale os apks quando
 - Baixe o Kernel: [Download](https://github.com/Andrey0800770/samsung_sdm845-kernel/releases)
 - Baixe o [Permissiver](https://sourceforge.net/projects/sgsi137/files/Permissiver%20v5.zip/download)
 - Baixe a GSI (Recomendo instalar as testadas, pois algumas GSIs não estão funcionando)
-- Baixe o Android 15 Fix
-  - [Para o S9+](https://github.com/Andrey0800770/kernel-build/raw/refs/heads/main/Android-15-Fix.zip)
-  - [Para o S9](https://github.com/Andrey0800770/kernel-build/raw/refs/heads/main/Android-15-Fix-S9.zip)
+- Baixe o [Android 15 GSI Fix](https://github.com/Andrey0800770/kernel-build/raw/refs/heads/main/Android-15-GSI-Fix.zip)
 
 ### Instalação no TWRP
 
