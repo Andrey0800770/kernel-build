@@ -30,5 +30,5 @@ e baixe algum Navegador, porque o sistema vem sem nenhum. Instale os apks quando
 - Instale o Permissiver
 - Instale a GSI
 - Instale o Android 15 Fix (isso irá modificar o vendor do seu dispositivo)
-- Formate os dados
+- Formate os data
 - Reinicie para o Sistema (Talvez na primeira inicialização o dispositivo reinicie. Espere reiniciar, que irá iniciar normalmente.)
