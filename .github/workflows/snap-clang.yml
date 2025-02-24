@@ -28,7 +28,7 @@ jobs:
       uses: Andrey0800770/kernel_build_action@main
       with:
        kernel-dir: sdm845
-       kernel-branch: main
+       kernel-branch: test
        config: star2qlte_chn_open_defconfig
        arch: arm64
        clang-url: https://gitlab.com/ZyCromerZ/sdclang-16.1.0.1.git
