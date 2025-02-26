@@ -34,9 +34,6 @@ jobs:
           CROSS_COMPILE="aarch64-linux-gnu-"
           CROSS_COMPILE_ARM32="arm-linux-gnueabi-"
           CROSS_COMPILE_COMPAT="arm-linux-gnueabi-"
-          LLVM=1
-          LLVM_IAS=1
-          INSTALL_MOD_STRIP=1
         python: python2
         anykernel3: true
         extra-version: -Dev
