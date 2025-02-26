@@ -1,9 +1,6 @@
 name: Test Workflow
 on:
-  workflow_dispatch: # Permite execução manual
-  push:             # Executa ao fazer push
-    branches:
-      - main
+  workflow_dispatch: # Permite execução manual             # Executa ao fazer push
 
 jobs:
   build:
