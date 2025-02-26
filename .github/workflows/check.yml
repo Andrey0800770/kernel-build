@@ -1,0 +1,24 @@
+name: Test Workflow
+on:
+  workflow_dispatch: # Permite execução manual
+  push:             # Executa ao fazer push
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-22.04
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install LLVM Toolchain
+        run: |
+          wget -q http://ftp.de.debian.org/debian/pool/main/l/llvm-toolchain-19/llvm-19-linker-tools_19.1.4-1~deb12u1_amd64.deb
+          sudo dpkg --force-depends -i llvm-19-linker-tools_19.1.4-1~deb12u1_amd64.deb
+
+      - name: Find LLVMgold.so
+        run: |
+          echo "Procurando por LLVMgold.so..."
+          find / -name "LLVMgold.so" 2>/dev/null || echo "LLVMgold.so não encontrado"
