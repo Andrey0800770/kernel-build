@@ -29,3 +29,11 @@
 - Install the Android 15 Fix (this will modify your device's vendor)
 - Format Data
 - Reboot to System (The device may restart on the first boot, wait for it to restart, and it will boot normally).
+
+## Recommendations 
+- Lag Fix: [Download](https://github.com/Andrey0800770/kernel-build/raw/refs/heads/main/files/Fix%20GSI%20Lags%20V1.0.zip)
+  - Fix lag when scrolling.
+- Fix StatusBar Padding, AOD and Round Corners: [Download](https://github.com/Andrey0800770/kernel-build/raw/refs/heads/main/files/Fix%20StatusBar%20Padding,%20AOD%20and%20Round%20Corners%20V2.0.zip)
+  - Fix time and battery icons off screen.
+
+
