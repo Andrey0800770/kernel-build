@@ -5,13 +5,13 @@
 
 ### EvolutionX 10.3
 
-https://github.com/mytja/treble_evo/releases
-- Para corrigir o Samsung Features não aparecendo no PHH Settings, instale este módulo no KSU: [Download](https://github.com/Andrey0800770/kernel-build/raw/refs/heads/main/TrebleGSIProps_1.1.zip)
+- [EvolutionX 10.3 Releases](https://github.com/mytja/treble_evo/releases)
+- Para corrigir o Samsung Features não aparecendo no PHH Settings, instale este módulo no KSU: [Download](https://github.com/Andrey0800770/kernel-build/raw/refs/heads/main/files/TrebleGSIProps_1.1.zip)
 
 
 ### AOSP Treble
 
-https://github.com/TrebleDroid/treble_experimentations/releases
+- [AOSP Treble Releases](https://github.com/TrebleDroid/treble_experimentations/releases)
 - Antes de instalar: baixe o [Google Webview](https://www.apkmirror.com/apk/google-inc/android-system-webview/android-system-webview-132-0-6834-165-release/android-system-webview-132-0-6834-165-android-apk-download/)
 e baixe algum Navegador, porque o sistema vem sem nenhum. Instale os apks quando iniciar a GSI.
 
@@ -21,7 +21,7 @@ e baixe algum Navegador, porque o sistema vem sem nenhum. Instale os apks quando
 - Baixe o Kernel: [Download](https://github.com/Andrey0800770/samsung_sdm845-kernel/releases)
 - Baixe o [Permissiver](https://sourceforge.net/projects/sgsi137/files/Permissiver%20v5.zip/download)
 - Baixe a GSI (Recomendo instalar as testadas, pois algumas GSIs não estão funcionando)
-- Baixe o [Android 15 GSI Fix](https://github.com/Andrey0800770/kernel-build/raw/refs/heads/main/Android-15-GSI-Fix.zip)
+- Baixe o [Android 15 GSI Fix](https://github.com/Andrey0800770/kernel-build/raw/refs/heads/main/files/Android-15-GSI-Fix.zip)
 
 ### Instalação no TWRP
 
@@ -38,4 +38,3 @@ e baixe algum Navegador, porque o sistema vem sem nenhum. Instale os apks quando
   - Corrige penquenos lags ao scrollar.
 - Fix StatusBar Padding, AOD and Round Corners: [Download](https://github.com/Andrey0800770/kernel-build/raw/refs/heads/main/files/Fix%20StatusBar%20Padding,%20AOD%20and%20Round%20Corners%20V2.0.zip)
   - Corrige os ícones de hora e bateria fora da tela.
-
