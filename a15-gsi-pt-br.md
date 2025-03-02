@@ -32,3 +32,10 @@ e baixe algum Navegador, porque o sistema vem sem nenhum. Instale os apks quando
 - Instale o Android 15 Fix (isso irá modificar o vendor do seu dispositivo)
 - Formate data
 - Reinicie para o Sistema (Talvez na primeira inicialização o dispositivo reinicie. Espere reiniciar, que irá iniciar normalmente.)
+
+## Recomendações 
+- Lag Fix: [Download](https://github.com/Andrey0800770/kernel-build/raw/refs/heads/main/files/Fix%20GSI%20Lags%20V1.0.zip)
+- Fix StatusBar Padding, AOD and Round Corners: [Download](https://github.com/Andrey0800770/kernel-build/raw/refs/heads/main/files/Fix%20StatusBar%20Padding,%20AOD%20and%20Round%20Corners%20V2.0.zip)
+
+
+
