@@ -10,7 +10,7 @@
 
 ### AOSP Treble
 - [AOSP Treble Releases](https://github.com/TrebleDroid/treble_experimentations/releases)
-- Before installing: download [Google Webview](https://www.apkmirror.com/apk/google-inc/android-system-webview/android-system-webview-132-0-6834-165-release/android-system-webview-132-0-6834-165-androi...) also download a Browser, as the system comes without one. 
+- Before installing: download [Google Webview](https://www.apkmirror.com/apk/google-inc/android-system-webview/android-system-webview-132-0-6834-165-release) also download a Browser, as the system comes without one. 
 
 ## How to Install
 
