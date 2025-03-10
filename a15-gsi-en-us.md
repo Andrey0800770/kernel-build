@@ -4,6 +4,9 @@
 
 ## Tested GSIs:
 
+### VoltageOS 4.2
+- [VoltageOS Releases](https://github.com/cawilliamson/treble_voltage/releases/)
+
 ### EvolutionX 10.3
 - [EvolutionX 10.3 Releases](https://github.com/mytja/treble_evo/releases)
 - To fix Samsung features not appearing on PHH Settings, install this module in KSU: [Download](https://github.com/Andrey0800770/kernel-build/raw/refs/heads/main/files/TrebleGSIProps_1.1.zip)
