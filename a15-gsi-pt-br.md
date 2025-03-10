@@ -3,6 +3,9 @@
 
 ## GSIs Testadas:
 
+### VoltageOS 4.2
+- [VoltageOS Releases](https://github.com/cawilliamson/treble_voltage/releases/)
+
 ### EvolutionX 10.3
 
 - [EvolutionX 10.3 Releases](https://github.com/mytja/treble_evo/releases)
