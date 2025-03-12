@@ -16,7 +16,7 @@ jobs:
       with:
           kernel-url: https://github.com/Andrey0800770/samsung_sdm845-kernel
           kernel-dir: sdm845
-          kernel-branch: debug
+          kernel-branch: main
           config: star2qlte_chn_open_defconfig
           arch: arm64
           clang-tar: https://github.com/ZyCromerZ/Clang/releases/download/21.0.0git-20250307-release/Clang-21.0.0git-20250307.tar.gz
