@@ -2,6 +2,25 @@ name: Update Cache
 
 on:
   workflow_dispatch:
+    inputs:
+      clang_url:
+        description: 'URL para download do Clang'
+        required: true
+        default: 'https://android.googlesource.com/platform/prebuilts/clang/host/linux-x86/+archive/d19c99c180cfa21504426915d765b5e7adf878b6/clang-r547379.tar.gz'
+      update_clang_cache:
+        description: 'Atualizar cache do Clang?'
+        type: boolean
+        required: true
+        default: false
+      update_kernel_cache:
+        description: 'Atualizar cache do Kernel?'
+        type: boolean
+        required: true
+        default: false
+      cache_key:
+        description: 'Chave personalizada para o cache'
+        required: false
+        default: 'main-1602'
 
 jobs:
   Build-Kernel:
@@ -20,21 +39,29 @@ jobs:
       uses: actions/cache@v4.2.0
       with:
         path: kernel/sdm845
-        key: main-160225
+        key: ${{ github.event.inputs.cache_key }}
         restore-keys: |
           main
 
     - name: Downloading kernel
-      if: steps.kernel-cache.outputs.cache-hit
+      if: steps.kernel-cache.outputs.cache-hit != 'true' || github.event.inputs.update_kernel_cache == 'true'
       run: |
         rm -rf kernel/sdm845
-        git clone --recursive https://github.com/Andrey0800770/samsung_sdm845-kernel -b main kernel/sdm845  
-               
+        git clone --recursive https://github.com/Andrey0800770/samsung_sdm845-kernel -b main --depth=1 kernel/sdm845        
+
     - name: Set-Up clang cache
       id: clang-cache
       uses: actions/cache@v4.2.0
       with:
         path: /home/runner/clang
-        key: clang-r547379
+        key: clang-${{ github.event.inputs.cache_key }}
         restore-keys: |
-          clang-r547379"
+          clang-r547379
+      
+    - name: Downloading and extracting Clang
+      if: steps.clang-cache.outputs.cache-hit != 'true' || github.event.inputs.update_clang_cache == 'true'
+      run: |
+        rm -rf /home/runner/clang
+        mkdir -p /home/runner/clang
+        URL=${{ github.event.inputs.clang_url }}
+        curl -L $URL -o "clang.tar" && tar -xz -C /home/runner/clang -f "clang.tar"
