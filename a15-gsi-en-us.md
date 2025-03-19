@@ -4,12 +4,24 @@
 
 ## Tested GSIs:
 
+### LineageOS 22.1
+- [LineageOS Releases](https://github.com/MisterZtr/LineageOS_gsi/releases)
+- Before starting, install on TWRP: [bootloop-fix](https://github.com/Andrey0800770/kernel-build/raw/refs/heads/main/files/bootloop-fix.zip)
+
 ### VoltageOS 4.2
 - [VoltageOS Releases](https://github.com/cawilliamson/treble_voltage/releases/)
 
 ### EvolutionX 10.3
 - [EvolutionX 10.3 Releases](https://github.com/mytja/treble_evo/releases)
 - To fix Samsung features not appearing on PHH Settings, install this module in KSU: [Download](https://github.com/Andrey0800770/kernel-build/raw/refs/heads/main/files/TrebleGSIProps_1.1.zip)
+
+### 2by2 Project                                                                                             
+- [2by2 Releases](https://github.com/MisterZtr/2by2_gsi/releases)
+- Before starting, install on TWRP: [bootloop-fix](https://github.com/Andrey0800770/kernel-build/raw/refs/heads/main/files/bootloop-fix.zip)
+
+### BreezeOS                                                                                                 
+- [BreezeOS Releases](https://t.me/CottonCloudFiles)
+- Before starting, install on TWRP: [bootloop-fix](https://github.com/Andrey0800770/kernel-build/raw/refs/heads/main/files/bootloop-fix.zip)
 
 ### AOSP Treble
 - [AOSP Treble Releases](https://github.com/TrebleDroid/treble_experimentations/releases)
