@@ -7,6 +7,7 @@
 ### LineageOS 22.1
 - [LineageOS Releases](https://github.com/MisterZtr/LineageOS_gsi/releases)
 - Before starting, install on TWRP: [bootloop-fix](https://github.com/Andrey0800770/kernel-build/raw/refs/heads/main/files/bootloop-fix.zip)
+- lockscreen not working
 
 ### VoltageOS 4.2
 - [VoltageOS Releases](https://github.com/cawilliamson/treble_voltage/releases/)
@@ -18,10 +19,12 @@
 ### 2by2 Project                                                                                             
 - [2by2 Releases](https://github.com/MisterZtr/2by2_gsi/releases)
 - Before starting, install on TWRP: [bootloop-fix](https://github.com/Andrey0800770/kernel-build/raw/refs/heads/main/files/bootloop-fix.zip)
+- lock screen not working
 
-### BreezeOS                                                                                                 
+### BreezeOS                                                                                  
 - [BreezeOS Releases](https://t.me/CottonCloudFiles)
 - Before starting, install on TWRP: [bootloop-fix](https://github.com/Andrey0800770/kernel-build/raw/refs/heads/main/files/bootloop-fix.zip)
+- lock screen not working
 
 ### AOSP Treble
 - [AOSP Treble Releases](https://github.com/TrebleDroid/treble_experimentations/releases)
