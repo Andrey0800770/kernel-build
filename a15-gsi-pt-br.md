@@ -17,6 +17,7 @@
 ### EvolutionX 10.3
 
 - [EvolutionX 10.3 Releases](https://github.com/mytja/treble_evo/releases)
+- 10.3.1 precisa de: [bootloop-fix](https://github.com/Andrey0800770/kernel-build/raw/refs/heads/main/files/bootloop-fix.zip) e a tela de bloqueio não funciona.
 - Para corrigir o Samsung Features não aparecendo no PHH Settings, instale este módulo no KSU: [Download](https://github.com/Andrey0800770/kernel-build/raw/refs/heads/main/files/TrebleGSIProps_1.1.zip)
 
 ### 2by2 Project
