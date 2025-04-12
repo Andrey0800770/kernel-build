@@ -14,8 +14,8 @@ jobs:
     - name: Build Kernel
       uses: Andrey0800770/kernel_build_action@main
       with:
-          kernel-url: https://github.com/Andrey0800770/samsung_sdm845-kernel
-          kernel-dir: sdm845
+          kernel-url: https://git.codelinaro.org/clo/la/kernel/msm-4.9.git
+          kernel-dir: LA.UM.10.3.c25-03500-sdm845.0
           kernel-branch: test
           config: star2qlte_chn_open_defconfig
           arch: arm64
