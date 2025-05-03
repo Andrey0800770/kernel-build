@@ -58,3 +58,13 @@ e baixe algum Navegador, porque o sistema vem sem nenhum. Instale os apks quando
   - Corrige pequenos lags ao scrollar.
 - Fix StatusBar Padding, AOD and Round Corners: [Download](https://github.com/Andrey0800770/kernel-build/raw/refs/heads/main/files/Fix%20StatusBar%20Padding,%20AOD%20and%20Round%20Corners%20V2.0.zip)
   - Corrige os ícones de hora e bateria fora da tela.
+
+## Correção do Brilho: 
+Phh Treble Settings ->
+Samsung features ->
+- Defina para 0: backlight scale/max backlight level
+- Ative: Enable extended brightness range
+
+Volte para Phh Treble Settings ->
+Misc Features ->
+- Ative: Set alternative brightness curve
