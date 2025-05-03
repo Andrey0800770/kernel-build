@@ -55,4 +55,12 @@
 - Fix StatusBar Padding, AOD and Round Corners: [Download](https://github.com/Andrey0800770/kernel-build/raw/refs/heads/main/files/Fix%20StatusBar%20Padding,%20AOD%20and%20Round%20Corners%20V2.0.zip)
   - Fix time and battery icons off screen.
 
+## Brightness Fix: 
+Phh Treble Settings ->
+Samsung features ->
+- Set to 0: backlight scale/max backlight level
+- Enable: Enable extended brightness range
 
+Back to Phh Treble Settings ->
+Misc Features ->
+- Enable: Set alternative brightness curve
