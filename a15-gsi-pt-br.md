@@ -1,5 +1,5 @@
 # Android 15 no Galaxy S9+/S9/N9 Snapdragon
-### Aviso: O Android 15 está na sua fase inicial de desenvolvimento, portanto todas as GSIs atualmente têm algum problema. Não instale achando que tudo estará funcionando ou que qualquer GSI funcionará perfeitamente.
+### Aviso: Não é recomendado para uso diário, pois todas as GSIs atualmente têm algum problema. Não instale achando que tudo estará funcionando ou que qualquer GSI funcionará perfeitamente.
 
 ## GSIs Testadas:
 
