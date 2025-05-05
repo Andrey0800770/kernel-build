@@ -1,35 +1,70 @@
-# Android 15 on Galaxy S9+/S9/N9 Snapdragon
+# Android 15 (Only QPR1) on Galaxy S9+/S9/N9 Snapdragon
 
-### Warning: It is not recommended for daily use as all GSIs currently have some issue. Do not install expecting everything to work or that any GSI will function perfectly.
+### Warning: Do not install expecting everything to work or that any GSI will function perfectly.
+
+#### Bootloop-fix: It makes the lock screen stop working, because it is the cause of the bootloop. 
 
 ## Tested GSIs:
 
-### LineageOS 22.1
-- [LineageOS Releases](https://github.com/MisterZtr/LineageOS_gsi/releases)
-- Before starting, install on TWRP: [bootloop-fix](https://github.com/Andrey0800770/kernel-build/raw/refs/heads/main/files/bootloop-fix.zip)
-- lockscreen not working
+<details>
+<summary>LineageOS 22.1</summary>
 
-### VoltageOS 4.2
+- [LineageOS Releases](https://github.com/MisterZtr/LineageOS_gsi/releases)
+- Before starting, install in TWRP: [bootloop-fix](https://github.com/Andrey0800770/kernel-build/raw/refs/heads/main/files/bootloop-fix.zip)
+- Lock screen does not work
+
+</details>
+
+<details>
+<summary>InfinityX 2.5</summary>
+
+- [InfinityX Releases](https://github.com/Doze-off/manifest/releases/tag/2025-05-02)
+- Before starting, install in TWRP: [bootloop-fix](https://github.com/Andrey0800770/kernel-build/raw/refs/heads/main/files/bootloop-fix.zip)
+- Lock screen does not work
+
+</details>
+
+<details>
+<summary>VoltageOS 4.2</summary>
+
 - [VoltageOS Releases](https://github.com/cawilliamson/treble_voltage/releases/)
 
-### EvolutionX 10.3
+</details>
+
+<details>
+<summary>EvolutionX 10.3</summary>
+
 - [EvolutionX 10.3 Releases](https://github.com/mytja/treble_evo/releases)
-- 10.3.1 need: [bootloop-fix](https://github.com/Andrey0800770/kernel-build/raw/refs/heads/main/files/bootloop-fix.zip) and not work LockScreen.
-- To fix Samsung features not appearing on PHH Settings, install this module in KSU: [Download](https://github.com/Andrey0800770/kernel-build/raw/refs/heads/main/files/TrebleGSIProps_1.1.zip)
+- 10.3.1 requires: [bootloop-fix](https://github.com/Andrey0800770/kernel-build/raw/refs/heads/main/files/bootloop-fix.zip) and the lock screen does not work.
+- To fix Samsung Features not appearing in PHH Settings, install this module in KSU: [Download](https://github.com/Andrey0800770/kernel-build/raw/refs/heads/main/files/TrebleGSIProps_1.1.zip)
 
-### 2by2 Project                                                                                             
+</details>
+
+<details>
+<summary>2by2 Project</summary>
+
 - [2by2 Releases](https://github.com/MisterZtr/2by2_gsi/releases)
-- Before starting, install on TWRP: [bootloop-fix](https://github.com/Andrey0800770/kernel-build/raw/refs/heads/main/files/bootloop-fix.zip)
-- lock screen not working
+- Before starting, install in TWRP: [bootloop-fix](https://github.com/Andrey0800770/kernel-build/raw/refs/heads/main/files/bootloop-fix.zip)
+- Lock screen does not work
 
-### BreezeOS                                                                                  
+</details>
+
+<details>
+<summary>BreezeOS</summary>
+
 - [BreezeOS Releases](https://t.me/CottonCloudFiles)
-- Before starting, install on TWRP: [bootloop-fix](https://github.com/Andrey0800770/kernel-build/raw/refs/heads/main/files/bootloop-fix.zip)
-- lock screen not working
+- Before starting, install in TWRP: [bootloop-fix](https://github.com/Andrey0800770/kernel-build/raw/refs/heads/main/files/bootloop-fix.zip)
+- Lock screen does not work
 
-### AOSP Treble
+</details>
+
+<details>
+<summary>AOSP Treble R9 ci-20250117</summary>
+
 - [AOSP Treble Releases](https://github.com/TrebleDroid/treble_experimentations/releases)
-- Before installing: download [Google Webview](https://www.apkmirror.com/apk/google-inc/android-system-webview/android-system-webview-132-0-6834-165-release/android-system-webview-132-0-6834-165-android-apk-download/) also download a Browser, as the system comes without one. 
+- Before installing: download [Google Webview](https://www.apkmirror.com/apk/google-inc/android-system-webview/android-system-webview-132-0-6834-165-release/android-system-webview-132-0-6834-165-android-apk-download/) and download a Browser, as the system comes without one. Install the APKs when starting the GSI.
+
+</details>
 
 ## How to Install
 
