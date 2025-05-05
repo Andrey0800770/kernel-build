@@ -57,7 +57,7 @@
 </details>
 
 <details>
-<summary>AOSP Treble</summary>
+<summary>AOSP Treble R9 ci-20250117</summary>
 
 - [AOSP Treble Releases](https://github.com/TrebleDroid/treble_experimentations/releases)
 - Antes de instalar: baixe o [Google Webview](https://www.apkmirror.com/apk/google-inc/android-system-webview/android-system-webview-132-0-6834-165-release/android-system-webview-132-0-6834-165-android-apk-download/) e baixe algum Navegador, porque o sistema vem sem nenhum. Instale os apks quando iniciar a GSI.
