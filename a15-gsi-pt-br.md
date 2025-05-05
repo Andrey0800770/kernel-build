@@ -1,6 +1,8 @@
 # Android 15 no Galaxy S9+/S9/N9 Snapdragon
 ### Aviso: Não instale achando que tudo estará funcionando ou que qualquer GSI funcionará perfeitamente.
 
+#### Bootloop-fix: Faz tela de bloqueio parar de funcionar, porque é a causa o bootloop.
+
 ## GSIs Testadas:
 
 <details>
