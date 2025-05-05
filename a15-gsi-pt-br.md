@@ -13,6 +13,14 @@
 </details>
 
 <details>
+<summary>InfinityX 2.5</summary>
+
+- [InfinityX Releases](https://github.com/Doze-off/manifest/releases/tag/2025-05-02)
+- Antes de iniciar instale no TWRP: [bootloop-fix](https://github.com/Andrey0800770/kernel-build/raw/refs/heads/main/files/bootloop-fix.zip)
+- Tela de bloqueio não funciona
+</details>
+
+<details>
 <summary>VoltageOS 4.2</summary>
 
 - [VoltageOS Releases](https://github.com/cawilliamson/treble_voltage/releases/)
