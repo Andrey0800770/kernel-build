@@ -1,39 +1,58 @@
 # Android 15 no Galaxy S9+/S9/N9 Snapdragon
-### Aviso: Não é recomendado para uso diário, pois todas as GSIs atualmente têm algum problema. Não instale achando que tudo estará funcionando ou que qualquer GSI funcionará perfeitamente.
+### Aviso: Não instale achando que tudo estará funcionando ou que qualquer GSI funcionará perfeitamente.
 
 ## GSIs Testadas:
 
+<details>
+<summary>LineageOS 22.1</summary>
 
-
-
-### LineageOS 22.1
 - [LineageOS Releases](https://github.com/MisterZtr/LineageOS_gsi/releases)
 - Antes de iniciar instale no TWRP: [bootloop-fix](https://github.com/Andrey0800770/kernel-build/raw/refs/heads/main/files/bootloop-fix.zip)
 - Tela de bloqueio não funciona
 
-### VoltageOS 4.2
+</details>
+
+<details>
+<summary>VoltageOS 4.2</summary>
+
 - [VoltageOS Releases](https://github.com/cawilliamson/treble_voltage/releases/)
 
-### EvolutionX 10.3
+</details>
+
+<details>
+<summary>EvolutionX 10.3</summary>
 
 - [EvolutionX 10.3 Releases](https://github.com/mytja/treble_evo/releases)
 - 10.3.1 precisa de: [bootloop-fix](https://github.com/Andrey0800770/kernel-build/raw/refs/heads/main/files/bootloop-fix.zip) e a tela de bloqueio não funciona.
 - Para corrigir o Samsung Features não aparecendo no PHH Settings, instale este módulo no KSU: [Download](https://github.com/Andrey0800770/kernel-build/raw/refs/heads/main/files/TrebleGSIProps_1.1.zip)
 
-### 2by2 Project
+</details>
+
+<details>
+<summary>2by2 Project</summary>
+
 - [2by2 Releases](https://github.com/MisterZtr/2by2_gsi/releases)
 - Antes de iniciar instale no TWRP: [bootloop-fix](https://github.com/Andrey0800770/kernel-build/raw/refs/heads/main/files/bootloop-fix.zip)
 - Tela de bloqueio não funciona
 
-### BreezeOS
+</details>
+
+<details>
+<summary>BreezeOS</summary>
+
 - [BreezeOS Releases](https://t.me/CottonCloudFiles)
 - Antes de iniciar instale no TWRP: [bootloop-fix](https://github.com/Andrey0800770/kernel-build/raw/refs/heads/main/files/bootloop-fix.zip)
 - Tela de bloqueio não funciona
 
-### AOSP Treble
+</details>
+
+<details>
+<summary>AOSP Treble</summary>
+
 - [AOSP Treble Releases](https://github.com/TrebleDroid/treble_experimentations/releases)
-- Antes de instalar: baixe o [Google Webview](https://www.apkmirror.com/apk/google-inc/android-system-webview/android-system-webview-132-0-6834-165-release/android-system-webview-132-0-6834-165-android-apk-download/)
-e baixe algum Navegador, porque o sistema vem sem nenhum. Instale os apks quando iniciar a GSI.
+- Antes de instalar: baixe o [Google Webview](https://www.apkmirror.com/apk/google-inc/android-system-webview/android-system-webview-132-0-6834-165-release/android-system-webview-132-0-6834-165-android-apk-download/) e baixe algum Navegador, porque o sistema vem sem nenhum. Instale os apks quando iniciar a GSI.
+
+</details>
 
 ## Como instalar
 ### Baixe:
