@@ -37,7 +37,7 @@ jobs:
       uses: Andrey0800770/kernel_build_action@main
       with:
        kernel-dir: sdm845
-       kernel-branch: dev
+       kernel-branch: debug
        config: star2qlte_chn_open_defconfig
        arch: arm64
        path: /home/runner/clang/bin:$BINUTILS:$PATH
