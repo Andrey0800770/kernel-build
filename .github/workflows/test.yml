@@ -6,7 +6,7 @@ on:
       clang_url:
         description: 'URL para download do Clang'
         required: true
-        default: 'https://android.googlesource.com/platform/prebuilts/clang/host/linux-x86/+archive/d19c99c180cfa21504426915d765b5e7adf878b6/clang-r547379.tar.gz'
+        default: 'https://android.googlesource.com/platform/prebuilts/clang/host/linux-x86/+archive/62cdcefa89e31af2d72c366e8b5ef8db84caea62/clang-r547379.tar.gz'
       update_clang_cache:
         description: 'Atualizar cache do Clang?'
         type: boolean
@@ -20,7 +20,7 @@ on:
       cache_key:
         description: 'Chave personalizada para o cache'
         required: false
-        default: 'main-1602'
+        default: 'main-1005'
 
 jobs:
   Build-Kernel:
