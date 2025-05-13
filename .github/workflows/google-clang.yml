@@ -37,7 +37,7 @@ jobs:
       uses: Andrey0800770/kernel_build_action@main
       with:
        kernel-dir: sdm845
-       kernel-branch: debug
+       kernel-branch: test
        config: star2qlte_chn_open_defconfig
        arch: arm64
        path: /home/runner/clang/bin:$BINUTILS:$PATH
@@ -45,3 +45,4 @@ jobs:
        python: python2
        llvm: 1
        anykernel3: true
+       extra-version: -Teste
