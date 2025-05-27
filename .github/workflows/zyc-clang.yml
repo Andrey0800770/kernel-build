@@ -24,7 +24,7 @@ jobs:
       uses: Andrey0800770/kernel_build_action@main
       with:
           kernel-dir: sdm845
-          kernel-branch: ksu+susfs
+          kernel-branch: dev
           config: star2qlte_chn_open_defconfig
           arch: arm64
           clang-tar: https://github.com/ZyCromerZ/Clang/releases/download/21.0.0git-20250519-release/Clang-21.0.0git-20250519.tar.gz
@@ -32,4 +32,4 @@ jobs:
           cflags: "CC=clang CROSS_COMPILE=aarch64-linux-gnu-"
           python: python2
           anykernel3: true
-          extra-version: -Rel7
+          extra-version: -Rel7-Overclocked
