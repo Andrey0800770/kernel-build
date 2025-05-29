@@ -29,7 +29,7 @@ jobs:
       uses: actions/cache@v4.2.0
       with:
         path: /home/runner/clang
-        key: clang-main-1005
+        key: clang-clang-r547379
         restore-keys: |
           clang-r547379
               
