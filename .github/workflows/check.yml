@@ -27,7 +27,7 @@ jobs:
         run: |
           sudo apt-get update -y 
           sudo apt install gcc-aarch64-linux-gnu gcc-arm-linux-gnueabi aria2 binutils make python3 libssl-dev build-essential bc bison flex unzip ca-certificates xz-utils mkbootimg cpio device-tree-compiler git -y
-          aria2c -j$(nproc --all) $(curl -fsSL https://raw.githubusercontent.com/Vynxid/Clang/refs/heads/main/Clang-main-link.txt)
+          aria2c -j$(nproc --all) $(curl -fsSL https://raw.githubusercontent.com/ZyCromerZ/Clang/refs/heads/main/Clang-main-link.txt)
           mkdir zyc-clang
           tar -xzf Clang-*.tar.gz -C zyc-clang
           git clone https://github.com/osm0sis/AnyKernel3
