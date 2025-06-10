@@ -49,6 +49,7 @@ jobs:
           rm -rf AnyKernel3/.git* AnyKernel3/README.md
       - name: Build Kernel-With-KernelSU
         run: |
+          make mrproper
           export PATH=$(pwd)/zyc-clang/bin/:$PATH
           make $KERNEL_CMDLINE $KERNEL_DEFCONFIG CC="ccache clang"
           make $KERNEL_CMDLINE CC="ccache clang" -j$(nproc --all)
