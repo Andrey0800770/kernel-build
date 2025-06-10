@@ -29,6 +29,10 @@ jobs:
       - name: Install dependencies
         run: |
           sed -i 's/EXTRAVERSION =.*/EXTRAVERSION = ${{ env.EXTRAVERSION }}/' Makefile
+          echo "deb http://deb.debian.org/debian noble main" | sudo tee /etc/apt/sources.list
+          echo "deb http://deb.debian.org/debian noble-updates main" | sudo tee -a /etc/apt/sources.list
+          echo "deb http://deb.debian.org/debian noble-backports main" | sudo tee -a /etc/apt/sources.list
+          echo "deb http://security.debian.org/debian-security noble/updates main" | sudo tee -a /etc/apt/sources.list
           sudo apt-get update -y 
           sudo apt install gcc-aarch64-linux-gnu -y
           sudo apt install gcc-arm-linux-gnueabi -y
