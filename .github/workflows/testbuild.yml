@@ -26,7 +26,7 @@ jobs:
       - name: Build
         run: |
           ls
-          cd ./app/jni/src
+          cd ./sm64-port-android-base/app/jni/src
           make -j$(nproc --all)
           cd ../../..
           ./gradlew assembleDebug
