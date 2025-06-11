@@ -16,20 +16,22 @@ jobs:
           EOF
           sudo apt-get update -y
           sudo apt-get install -y git wget make python3 build-essential zip apksigner clang unzip
-          git clone https://github.com/VDavid003/sm64-port-android
-          cd sm64-port-android
+          git clone --recursive https://github.com/VDavid003/sm64-port-android-base
+          cd sm64-port-android-base
           wget -O Super_Mario_64_USA.zip https://myrient.erista.me/files/No-Intro/Nintendo%20-%20Nintendo%2064%20%28BigEndian%29/Super%20Mario%2064%20%28USA%29.zip
           unzip Super_Mario_64_USA.zip -d .
-          mv "Super Mario 64 (USA).z64" baserom.us.z64
+          mv "Super Mario 64 (USA).z64" ./app/jni/src/baserom.us.z64
           ./getSDL.sh
 
       - name: Build
         run: |
-          cd sm64-port-android
+          cd app/jni/src
           make -j$(nproc --all)
+          cd ../../..
+          ./gradlew assembleDebug
 
       - name: Upload Kernel
         uses: actions/upload-artifact@v4
         with:
           name: mario
-          path: build/us_pc/*
+          path: ./app/build/outputs/apk/debug/*
