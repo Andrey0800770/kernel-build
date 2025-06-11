@@ -1,43 +1,76 @@
-name: Build SM64 Android⁷
+name: Build SM64 Android with Docker
 on:
   workflow_dispatch:
 
 jobs:
-  build:
+  build-docker:
     runs-on: ubuntu-latest
     steps:
       - name: Install dependencies
         run: |
-          sudo apt-get update
-          sudo apt-get install -y wget unzip
+          sudo tee /etc/apt/sources.list > /dev/null <<EOF
+          deb http://archive.ubuntu.com/ubuntu/ noble main restricted universe multiverse
+          deb http://archive.ubuntu.com/ubuntu/ noble-updates main restricted universe multiverse
+          deb http://archive.ubuntu.com/ubuntu/ noble-backports main restricted universe multiverse
+          deb http://security.ubuntu.com/ubuntu/ noble-security main restricted universe multiverse
+          EOF
+          sudo apt-get update -y
+          sudo apt-get install -y git wget make python3 build-essential zip apksigner clang unzip docker.io
 
-      - name: Checkout repository
-        uses: actions/checkout@v4
-        with:
-          submodules: recursive
-
-      - name: Download and extract baserom
+      - name: Setup and prepare ROM
         run: |
+          # Clone the repository
+          git clone --recursive https://github.com/VDavid003/sm64-port-android-base
+          cd sm64-port-android-base
+          
+          # Download and extract ROM
           wget -O Super_Mario_64_USA.zip https://myrient.erista.me/files/No-Intro/Nintendo%20-%20Nintendo%2064%20%28BigEndian%29/Super%20Mario%2064%20%28USA%29.zip
-          unzip Super_Mario_64_USA.zip
-          mv "Super Mario 64 (USA).z64" app/jni/src/baserom.us.z64
+          unzip Super_Mario_64_USA.zip -d .
+          mv "Super Mario 64 (USA).z64" baserom.us.z64
+          
+          # Copy ROM to correct location
+          cp baserom.us.z64 ./app/jni/src/baserom.us.z64
 
       - name: Build Docker image
-        run: docker build . -t sm64_android
-
-      - name: Set up SDL symlinks
         run: |
+          cd sm64-port-android-base
+          docker build . -t sm64_android
+
+      - name: Setup SDL symlinks
+        run: |
+          cd sm64-port-android-base
           docker run --rm -v $(pwd):/sm64 sm64_android sh -c "ln -nsf /SDL2-2.0.12/src /sm64/app/jni/SDL/src"
           docker run --rm -v $(pwd):/sm64 sm64_android sh -c "ln -nsf /SDL2-2.0.12/include /sm64/app/jni/SDL/include"
 
       - name: Perform native build
-        run: docker run --rm -v $(pwd):/sm64 sm64_android sh -c "cd /sm64/app/jni/src && make --jobs 4"
+        run: |
+          cd sm64-port-android-base
+          # Use all available cores for faster build
+          docker run --rm -v $(pwd):/sm64 sm64_android sh -c "cd /sm64/app/jni/src && make --jobs $(nproc --all)"
 
       - name: Perform Android build
-        run: docker run --rm -v $(pwd):/sm64 sm64_android sh -c "./gradlew assembleDebug"
+        run: |
+          cd sm64-port-android-base
+          docker run --rm -v $(pwd):/sm64 sm64_android sh -c "./gradlew assembleDebug"
 
-      - name: Upload APK
+      - name: Verify APK exists
+        run: |
+          cd sm64-port-android-base
+          ls -al ./app/build/outputs/apk/debug/app-debug.apk
+
+      - name: Upload APK artifact
         uses: actions/upload-artifact@v4
         with:
-          name: sm64_android_apk
-          path: app/build/outputs/apk/debug/app-debug.apk
+          name: sm64-android-apk
+          path: sm64-port-android-base/app/build/outputs/apk/debug/app-debug.apk
+          retention-days: 30
+
+      - name: Upload build logs (if available)
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: build-logs
+          path: |
+            sm64-port-android-base/app/jni/src/build.log
+            sm64-port-android-base/gradle-build.log
+          retention-days: 7
