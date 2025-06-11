@@ -15,10 +15,12 @@ jobs:
           deb http://security.ubuntu.com/ubuntu/ noble-security main restricted universe multiverse
           EOF
           sudo apt-get update -y
-          sudo apt-get install -y git wget make python3 build-essential zip apksigner clang
+          sudo apt-get install -y git wget make python3 build-essential zip apksigner clang unzip
           git clone https://github.com/VDavid003/sm64-port-android
           cd sm64-port-android
-          wget -O baserom.us.z64 https://archive.org/download/super-mario-64-07.29.95/Super%20Mario%2064%2007.25.95.z64 
+          wget -O Super_Mario_64_USA.zip https://myrient.erista.me/files/No-Intro/Nintendo%20-%20Nintendo%2064%20%28BigEndian%29/Super%20Mario%2064%20%28USA%29.zip
+          unzip Super_Mario_64_USA.zip -d .
+          mv "Super Mario 64 (USA).z64" baserom.us.z64
           ./getSDL.sh
 
       - name: Build
