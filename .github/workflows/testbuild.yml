@@ -15,7 +15,7 @@ jobs:
           deb http://security.ubuntu.com/ubuntu/ noble-security main restricted universe multiverse
           EOF
           sudo apt-get update -y
-          sudo apt-get install -y git wget make python3 build-essential zip apksigner clang unzip
+          sudo apt-get install -y git wget make python3 build-essential zip apksigner clang unzip libusb-1.0
           git clone --recursive https://github.com/VDavid003/sm64-port-android-base
           cd sm64-port-android-base
           wget -O Super_Mario_64_USA.zip https://myrient.erista.me/files/No-Intro/Nintendo%20-%20Nintendo%2064%20%28BigEndian%29/Super%20Mario%2064%20%28USA%29.zip
@@ -27,7 +27,6 @@ jobs:
         run: |
           ls
           cd ./sm64-port-android-base/app/jni/src
-          make -j$(nproc --all)
           cd ../../..
           ./gradlew assembleDebug
 
