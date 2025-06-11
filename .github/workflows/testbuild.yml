@@ -15,7 +15,14 @@ jobs:
           deb http://security.ubuntu.com/ubuntu/ noble-security main restricted universe multiverse
           EOF
           sudo apt-get update -y
-          sudo apt-get install -y git wget make python3 build-essential zip apksigner clang unzip docker.io
+          sudo apt-get install -y git wget make python3 build-essential zip apksigner clang unzip
+          
+          # Fix Docker installation conflicts
+          sudo apt-get remove -y containerd.io || true
+          sudo apt-get install -y docker.io
+          sudo systemctl start docker
+          sudo systemctl enable docker
+          sudo usermod -aG docker $USER
 
       - name: Setup and prepare ROM
         run: |
@@ -34,24 +41,25 @@ jobs:
       - name: Build Docker image
         run: |
           cd sm64-port-android-base
-          docker build . -t sm64_android
+          # Use sudo for Docker commands to avoid permission issues
+          sudo docker build . -t sm64_android
 
       - name: Setup SDL symlinks
         run: |
           cd sm64-port-android-base
-          docker run --rm -v $(pwd):/sm64 sm64_android sh -c "ln -nsf /SDL2-2.0.12/src /sm64/app/jni/SDL/src"
-          docker run --rm -v $(pwd):/sm64 sm64_android sh -c "ln -nsf /SDL2-2.0.12/include /sm64/app/jni/SDL/include"
+          sudo docker run --rm -v $(pwd):/sm64 sm64_android sh -c "ln -nsf /SDL2-2.0.12/src /sm64/app/jni/SDL/src"
+          sudo docker run --rm -v $(pwd):/sm64 sm64_android sh -c "ln -nsf /SDL2-2.0.12/include /sm64/app/jni/SDL/include"
 
       - name: Perform native build
         run: |
           cd sm64-port-android-base
           # Use all available cores for faster build
-          docker run --rm -v $(pwd):/sm64 sm64_android sh -c "cd /sm64/app/jni/src && make --jobs $(nproc --all)"
+          sudo docker run --rm -v $(pwd):/sm64 sm64_android sh -c "cd /sm64/app/jni/src && make --jobs $(nproc --all)"
 
       - name: Perform Android build
         run: |
           cd sm64-port-android-base
-          docker run --rm -v $(pwd):/sm64 sm64_android sh -c "./gradlew assembleDebug"
+          sudo docker run --rm -v $(pwd):/sm64 sm64_android sh -c "./gradlew assembleDebug"
 
       - name: Verify APK exists
         run: |
