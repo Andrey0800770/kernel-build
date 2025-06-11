@@ -1,4 +1,4 @@
-name: Build test
+name: Build SM64 Android⁷
 on:
   workflow_dispatch:
 
@@ -8,30 +8,36 @@ jobs:
     steps:
       - name: Install dependencies
         run: |
-          sudo tee /etc/apt/sources.list > /dev/null <<EOF
-          deb http://archive.ubuntu.com/ubuntu/ noble main restricted universe multiverse
-          deb http://archive.ubuntu.com/ubuntu/ noble-updates main restricted universe multiverse
-          deb http://archive.ubuntu.com/ubuntu/ noble-backports main restricted universe multiverse
-          deb http://security.ubuntu.com/ubuntu/ noble-security main restricted universe multiverse
-          EOF
-          sudo apt-get update -y
-          sudo apt-get install -y git wget make python3 build-essential zip apksigner clang unzip libusb-1.0
-          git clone --recursive https://github.com/VDavid003/sm64-port-android-base
-          cd sm64-port-android-base
-          wget -O Super_Mario_64_USA.zip https://myrient.erista.me/files/No-Intro/Nintendo%20-%20Nintendo%2064%20%28BigEndian%29/Super%20Mario%2064%20%28USA%29.zip
-          unzip Super_Mario_64_USA.zip -d .
-          mv "Super Mario 64 (USA).z64" ./app/jni/src/baserom.us.z64
-          ./getSDL.sh
+          sudo apt-get update
+          sudo apt-get install -y wget unzip
 
-      - name: Build
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Download and extract baserom
         run: |
-          ls
-          cd ./sm64-port-android-base/app/jni/src
-          cd ../../..
-          ./gradlew assembleDebug
+          wget -O Super_Mario_64_USA.zip https://myrient.erista.me/files/No-Intro/Nintendo%20-%20Nintendo%2064%20%28BigEndian%29/Super%20Mario%2064%20%28USA%29.zip
+          unzip Super_Mario_64_USA.zip
+          mv "Super Mario 64 (USA).z64" app/jni/src/baserom.us.z64
 
-      - name: Upload Kernel
+      - name: Build Docker image
+        run: docker build . -t sm64_android
+
+      - name: Set up SDL symlinks
+        run: |
+          docker run --rm -v $(pwd):/sm64 sm64_android sh -c "ln -nsf /SDL2-2.0.12/src /sm64/app/jni/SDL/src"
+          docker run --rm -v $(pwd):/sm64 sm64_android sh -c "ln -nsf /SDL2-2.0.12/include /sm64/app/jni/SDL/include"
+
+      - name: Perform native build
+        run: docker run --rm -v $(pwd):/sm64 sm64_android sh -c "cd /sm64/app/jni/src && make --jobs 4"
+
+      - name: Perform Android build
+        run: docker run --rm -v $(pwd):/sm64 sm64_android sh -c "./gradlew assembleDebug"
+
+      - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: mario
-          path: ./app/build/outputs/apk/debug/*
+          name: sm64_android_apk
+          path: app/build/outputs/apk/debug/app-debug.apk
