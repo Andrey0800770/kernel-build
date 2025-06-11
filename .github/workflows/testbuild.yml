@@ -1,0 +1,31 @@
+name: Build test
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+      - name: Install dependencies
+        run: |
+          sudo tee /etc/apt/sources.list > /dev/null <<EOF
+          deb http://archive.ubuntu.com/ubuntu/ noble main restricted universe multiverse
+          deb http://archive.ubuntu.com/ubuntu/ noble-updates main restricted universe multiverse
+          deb http://archive.ubuntu.com/ubuntu/ noble-backports main restricted universe multiverse
+          deb http://security.ubuntu.com/ubuntu/ noble-security main restricted universe multiverse
+          EOF
+          sudo apt-get update -y
+          sudo apt install git wget make python getconf zip apksigner clang
+          git clone https://github.com/VDavid003/sm64-port-android
+          cd sm64-port-android
+          wget -O baserom.us.z64 https://archive.org/download/super-mario-64-07.29.95/Super%20Mario%2064%2007.25.95.z64 
+          ./getSDL.sh
+          
+      - name: Build
+        run: |
+          make -j$(nproc --all)
+          
+      - name: Upload Kernel
+        uses: actions/upload-artifact@v4
+        with:
+          name: mario
+          path: "build/us_pc/*"
