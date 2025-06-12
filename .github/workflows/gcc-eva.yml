@@ -19,9 +19,9 @@ jobs:
           kernel-branch: debug
           config: star2qlte_chn_open_defconfig
           arch: arm64
-          gcc64-tar: https://github.com/mvaisakh/gcc-build/releases/download/11052025/eva-gcc-arm64-11052025.xz
+          gcc64-tar: https://github.com/mvaisakh/gcc-build/releases/download/29052025/eva-gcc-arm64-29052025.xz
           path: $HOME/gcc64/gcc-arm64/bin:$PATH
           cflags: "CROSS_COMPILE=aarch64-elf-"
           python: python2
           anykernel3: true
-          extra-version: -EVA-Overclocked
+          extra-version: -EVA
