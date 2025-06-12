@@ -1,39 +1,60 @@
-name: LLVM CLANG
-
+name: LLVM Clang
 on:
   workflow_dispatch:
 
 jobs:
-  Build-Kernel:
-    strategy:
-      fail-fast: false
-    runs-on: ubuntu-22.04
-    permissions:
-      contents: read
-
+  build:
+    runs-on: ubuntu-latest
+    env:
+      CCACHE_COMPILERCHECK: "%compiler% -dumpmachine; %compiler% -dumpversion"
+      CCACHE_NOHASHDIR: "true"
+      CCACHE_MAXSIZE: "2G"
+      CCACHE_HARDLINK: "true"
+      KERNEL_DEFCONFIG: "star2qlte_chn_open_defconfig"
+      KERNEL_CMDLINE: "ARCH=arm64 CC=clang CLANG_TRIPLE=aarch64-linux-gnu- CROSS_COMPILE=aarch64-linux-gnu- CROSS_COMPILE_ARM32=arm-linux-gnueabi- O=out"
+      EXTRAVERSION: "-teste"
+    
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v4.2.0
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          repository: Andrey0800770/samsung_sdm845-kernel
+          ref: test
+          submodules: "false"
+          fetch-depth: 100
 
-    - name: Set-up cache for kernel
-      id: kernel-cache
-      uses: actions/cache@v4.2.0
-      with:
-        path: kernel/sdm845
-        key: main-160225
-        restore-keys: |
-          main
-                      
-    - name: Build Kernel
-      uses: Andrey0800770/kernel_build_action@main
-      with:
-       kernel-dir: sdm845
-       kernel-branch: ksu+susfs
-       config: star2qlte_chn_open_defconfig
-       arch: arm64
-       llvm-clang: yes
-       path: $BINUTILS:$PATH
-       cflags: "CC=clang CROSS_COMPILE=aarch64-linux-gnu-"
-       python: python2
-       llvm: 1
-       anykernel3: true
+      - name: Set up ccache
+        uses: hendrikmuhs/ccache-action@v1.2
+
+      - name: Install dependencies
+        run: |
+          sed -i 's/EXTRAVERSION =.*/EXTRAVERSION = ${{ env.EXTRAVERSION }}/' Makefile
+          sudo tee /etc/apt/sources.list > /dev/null <<EOF
+          deb http://archive.ubuntu.com/ubuntu/ noble main restricted universe multiverse
+          deb http://archive.ubuntu.com/ubuntu/ noble-updates main restricted universe multiverse
+          deb http://archive.ubuntu.com/ubuntu/ noble-backports main restricted universe multiverse
+          deb http://security.ubuntu.com/ubuntu/ noble-security main restricted universe multiverse
+          EOF
+          sudo apt-get update -y 
+          sudo apt install gcc-aarch64-linux-gnu -y
+          sudo apt install gcc-arm-linux-gnueabi -y
+          sudo apt install aria2 binutils make python3 libssl-dev build-essential bc bison flex unzip libssl-dev ca-certificates xz-utils mkbootimg cpio device-tree-compiler git git-lfs -y
+          dpkg -l | grep clang | awk '{print $2}' | xargs sudo apt-get remove -y
+          bash -c "$(wget -O - https://apt.llvm.org/llvm.sh)"
+          clang --version
+          git clone https://github.com/osm0sis/AnyKernel3
+          sed -i 's/do.devicecheck=1/do.devicecheck=0/g' AnyKernel3/anykernel.sh
+          sed -i 's!BLOCK=/dev/block/platform/omap/omap_hsmmc.0/by-name/boot;!BLOCK=auto;!g' AnyKernel3/anykernel.sh
+          sed -i 's/IS_SLOT_DEVICE=0;/is_slot_device=auto;/g' AnyKernel3/anykernel.sh
+          rm -rf AnyKernel3/.git* AnyKernel3/README.md
+      - name: Build Kernel-With-KernelSU
+        run: |
+          export PATH=$(pwd)/zyc-clang/bin/:$PATH
+          make $KERNEL_CMDLINE $KERNEL_DEFCONFIG CC="ccache clang"
+          make $KERNEL_CMDLINE CC="ccache clang" -j$(nproc --all)
+          cp out/arch/arm64/boot/Image.gz-dtb AnyKernel3
+      - name: Upload Kernel
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ env.KERNEL_DEFCONFIG }}
+          path: "AnyKernel3/*"
