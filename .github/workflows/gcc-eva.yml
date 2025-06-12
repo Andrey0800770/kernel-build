@@ -16,7 +16,7 @@ jobs:
       with:
           kernel-url: https://github.com/Andrey0800770/samsung_sdm845-kernel
           kernel-dir: sdm845
-          kernel-branch: debug
+          kernel-branch: test
           config: star2qlte_chn_open_defconfig
           arch: arm64
           gcc64-tar: https://github.com/mvaisakh/gcc-build/releases/download/29052025/eva-gcc-arm64-29052025.xz
