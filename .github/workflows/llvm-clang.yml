@@ -41,6 +41,7 @@ jobs:
           sudo apt install aria2 binutils make python3 libssl-dev build-essential bc bison flex unzip libssl-dev ca-certificates xz-utils mkbootimg cpio device-tree-compiler git git-lfs -y
           sudo dpkg -l | grep clang | awk '{print $2}' | xargs sudo apt-get remove -y
           sudo bash -c "$(wget -O - https://apt.llvm.org/llvm.sh)"
+          sudo update-alternatives --install /usr/bin/clang clang /usr/bin/clang-19 100
           clang --version
           git clone https://github.com/osm0sis/AnyKernel3
           sed -i 's/do.devicecheck=1/do.devicecheck=0/g' AnyKernel3/anykernel.sh
