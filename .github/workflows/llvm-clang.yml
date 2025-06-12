@@ -39,7 +39,7 @@ jobs:
           sudo apt install gcc-aarch64-linux-gnu -y
           sudo apt install gcc-arm-linux-gnueabi -y
           sudo apt install aria2 binutils make python3 libssl-dev build-essential bc bison flex unzip libssl-dev ca-certificates xz-utils mkbootimg cpio device-tree-compiler git git-lfs -y
-          dpkg -l | grep clang | awk '{print $2}' | xargs sudo apt-get remove -y
+          sudo dpkg -l | grep clang | awk '{print $2}' | xargs sudo apt-get remove -y
           sudo bash -c "$(wget -O - https://apt.llvm.org/llvm.sh)"
           clang --version
           git clone https://github.com/osm0sis/AnyKernel3
