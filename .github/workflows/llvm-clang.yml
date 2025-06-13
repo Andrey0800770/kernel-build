@@ -13,8 +13,13 @@ jobs:
       KERNEL_DEFCONFIG: "star2qlte_chn_open_defconfig"
       KERNEL_CMDLINE: "ARCH=arm64 CC=clang LLVM=1 CROSS_COMPILE=aarch64-linux-gnu- O=out"
       EXTRAVERSION: "-teste"
-    
+          
     steps:
+      - name: Set Swap Space
+        uses: pierotofy/set-swap-space@master
+        with:
+          swap-size-gb: 24
+    
       - name: Checkout
         uses: actions/checkout@v4
         with:
