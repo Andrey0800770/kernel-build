@@ -49,8 +49,8 @@ jobs:
           sudo update-alternatives --install /usr/bin/clang clang /usr/bin/clang-20 100
           clang --version
           sudo ls /usr/lib/llvm-20/lib/LLVMgold.so
-          sudo ls /usr/lib/bfd-plugins/LLVMgold.so
           sudo ln -s /usr/lib/llvm-20/lib/LLVMgold.so /usr/lib/bfd-plugins/LLVMgold.so
+          sudo ls /usr/lib/bfd-plugins/LLVMgold.so
           git clone https://github.com/osm0sis/AnyKernel3
           sed -i 's/do.devicecheck=1/do.devicecheck=0/g' AnyKernel3/anykernel.sh
           sed -i 's!BLOCK=/dev/block/platform/omap/omap_hsmmc.0/by-name/boot;!BLOCK=auto;!g' AnyKernel3/anykernel.sh
