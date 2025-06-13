@@ -11,7 +11,7 @@ jobs:
       CCACHE_MAXSIZE: "2G"
       CCACHE_HARDLINK: "true"
       KERNEL_DEFCONFIG: "star2qlte_chn_open_defconfig"
-      KERNEL_CMDLINE: "ARCH=arm64 CC=clang LD=ld.lld LLVM=1 LLVM_IAS=1 O=out"
+      KERNEL_CMDLINE: "ARCH=arm64 CC=clang LLVM=1 LLVM_IAS=1 CROSS_COMPILE=aarch64-linux-gnu- O=out"
       EXTRAVERSION: "-teste"
     
     steps:
