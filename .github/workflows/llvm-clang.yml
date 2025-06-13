@@ -11,7 +11,7 @@ jobs:
       CCACHE_MAXSIZE: "3G"
       CCACHE_HARDLINK: "true"
       KERNEL_DEFCONFIG: "star2qlte_chn_open_defconfig"
-      KERNEL_CMDLINE: "ARCH=arm64 CC=clang LLVM=1 CROSS_COMPILE=aarch64-linux-gnu- O=out"
+      KERNEL_CMDLINE: "ARCH=arm64 CC=clang LLVM=1 CROSS_COMPILE=aarch64-linux-gnu- LD_LIBRARY_PATH=/usr/lib/llvm-20/lib/ O=out"
       EXTRAVERSION: "-teste"
           
     steps:
@@ -51,7 +51,7 @@ jobs:
           sudo ls -l /usr/lib/llvm-20/lib/LLVMgold.so
           sudo ln -s /usr/lib/llvm-20/lib/LLVMgold.so /usr/lib/bfd-plugins/LLVMgold.so
           sudo ls -l /usr/lib/bfd-plugins/LLVMgold.so
-          export LD_LIBRARY_PATH=/usr/lib/bfd-plugins/LLVMgold.so
+          export LD_LIBRARY_PATH=/usr/lib/bfd-plugins/
           git clone https://github.com/osm0sis/AnyKernel3
           sed -i 's/do.devicecheck=1/do.devicecheck=0/g' AnyKernel3/anykernel.sh
           sed -i 's!BLOCK=/dev/block/platform/omap/omap_hsmmc.0/by-name/boot;!BLOCK=auto;!g' AnyKernel3/anykernel.sh
