@@ -46,12 +46,10 @@ jobs:
           sudo apt install aria2 binutils make python3 libssl-dev build-essential bc bison flex unzip libssl-dev ca-certificates xz-utils mkbootimg cpio device-tree-compiler git git-lfs -y
           sudo dpkg -l | grep clang | awk '{print $2}' | xargs sudo apt-get remove -y
           wget https://apt.llvm.org/llvm.sh && chmod +x llvm.sh && sudo ./llvm.sh 20
-          sudo update-alternatives --install /usr/bin/clang clang /usr/bin/clang-20 100
+          curl -L -o register_clang.sh https://raw.githubusercontent.com/Andrey0800770/kernel-build/refs/heads/main/files/update-alternatives.sh && chmod +x register_clang.sh && sudo ./register_clang.sh 20 1000
           clang --version
-          sudo ls -l /usr/lib/llvm-20/lib/LLVMgold.so
-          sudo ln -s /usr/lib/llvm-20/lib/LLVMgold.so /usr/lib/bfd-plugins/LLVMgold.so
-          sudo ls -l /usr/lib/bfd-plugins/LLVMgold.so
-          export LD_LIBRARY_PATH=/usr/lib/bfd-plugins/
+          ld.lld --version
+          llvm-as --version
           git clone https://github.com/osm0sis/AnyKernel3
           sed -i 's/do.devicecheck=1/do.devicecheck=0/g' AnyKernel3/anykernel.sh
           sed -i 's!BLOCK=/dev/block/platform/omap/omap_hsmmc.0/by-name/boot;!BLOCK=auto;!g' AnyKernel3/anykernel.sh
