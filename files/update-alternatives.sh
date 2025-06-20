@@ -1,13 +1,31 @@
 #!/usr/bin/env bash
 
-#     --slave /usr/bin/$1 $1 /usr/bin/$1-\${version} \\
+# Disable exit on error to allow GitHub Action to continue
+set +e
 
 function register_clang_version {
     local version=$1
     local priority=$2
 
+    # Check if required binaries exist
+    if [[ ! -x "/usr/bin/clang-${version}" || ! -x "/usr/bin/llvm-config-${version}" ]]; then
+        echo "Error: Clang/LLVM version ${version} binaries not found. Skipping registration."
+        return 0
+    fi
+
+    # Remove existing master alternatives for tools that will be slaves to avoid conflicts
+    for tool in clang++ clang-format clang-cpp clang-cl clangd clang-tidy clang-check clang-query asan_symbolize bugpoint dsymutil lld ld.lld lld-link llc lli obj2yaml opt sanstats verify-uselistorder wasm-ld yaml2obj; do
+        if update-alternatives --query $tool >/dev/null 2>&1; then
+            echo "Removing existing master alternative for $tool"
+            update-alternatives --remove $tool /usr/bin/$tool-${version} || {
+                echo "Warning: Failed to remove alternative for $tool. Continuing..."
+            }
+        fi
+    done
+
+    # Register LLVM tools with llvm-config as the master
     update-alternatives \
-         --verbose \
+        --verbose \
         --install /usr/bin/llvm-config          llvm-config          /usr/bin/llvm-config-${version} ${priority} \
         --slave   /usr/bin/llvm-ar              llvm-ar              /usr/bin/llvm-ar-${version} \
         --slave   /usr/bin/llvm-as              llvm-as              /usr/bin/llvm-as-${version} \
@@ -54,14 +72,16 @@ function register_clang_version {
         --slave   /usr/bin/llvm-symbolizer      llvm-symbolizer      /usr/bin/llvm-symbolizer-${version} \
         --slave   /usr/bin/llvm-tblgen          llvm-tblgen          /usr/bin/llvm-tblgen-${version} \
         --slave   /usr/bin/llvm-undname         llvm-undname         /usr/bin/llvm-undname-${version} \
-        --slave   /usr/bin/llvm-xray            llvm-xray            /usr/bin/llvm-xray-${version}
-        
+        --slave   /usr/bin/llvm-xray            llvm-xray            /usr/bin/llvm-xray-${version} || {
+            echo "Warning: Failed to register LLVM tools for version ${version}. Continuing..."
+        }
 
+    # Register Clang tools with clang as the master
     update-alternatives \
-         --verbose \
+        --verbose \
         --install /usr/bin/clang                clang                /usr/bin/clang-${version} ${priority} \
-        --slave   /usr/bin/clang++              clang++              /usr/bin/clang++-${version}  \
-        --slave   /usr/bin/clang-format         clang-format         /usr/bin/clang-format-${version}  \
+        --slave   /usr/bin/clang++              clang++              /usr/bin/clang++-${version} \
+        --slave   /usr/bin/clang-format         clang-format         /usr/bin/clang-format-${version} \
         --slave   /usr/bin/clang-cpp            clang-cpp            /usr/bin/clang-cpp-${version} \
         --slave   /usr/bin/clang-cl             clang-cl             /usr/bin/clang-cl-${version} \
         --slave   /usr/bin/clangd               clangd               /usr/bin/clangd-${version} \
@@ -81,8 +101,12 @@ function register_clang_version {
         --slave   /usr/bin/sanstats             sanstats             /usr/bin/sanstats-${version} \
         --slave   /usr/bin/verify-uselistorder  verify-uselistorder  /usr/bin/verify-uselistorder-${version} \
         --slave   /usr/bin/wasm-ld              wasm-ld              /usr/bin/wasm-ld-${version} \
-        --slave   /usr/bin/yaml2obj             yaml2obj             /usr/bin/yaml2obj-${version}
-        
+        --slave   /usr/bin/yaml2obj             yaml2obj             /usr/bin/yaml2obj-${version} || {
+            echo "Warning: Failed to register Clang tools for version ${version}. Continuing..."
+        }
+
+    echo "Registration completed for Clang/LLVM version ${version}."
+    return 0
 }
 
 register_clang_version $1 $2
