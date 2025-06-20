@@ -11,7 +11,7 @@ jobs:
       CCACHE_MAXSIZE: "4G"
       CCACHE_HARDLINK: "true"
       KERNEL_DEFCONFIG: "crownqlte_chn_open_defconfig"
-      KERNEL_CMDLINE: "ARCH=arm64 CC=clang LLVM=1 O=out"
+      KERNEL_CMDLINE: "ARCH=arm64 CC=clang LLVM=1 LLVM_IAS=1 CROSS_COMPILE=aarch-linux-gnu CROSS_COMPILE_ARM32=arm-linux-gnueabi CLANG_TRIPLE=aarch-linux-gnu** O=out"
       EXTRAVERSION: "-debug"
     
     steps:
