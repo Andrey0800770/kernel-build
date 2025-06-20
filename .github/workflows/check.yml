@@ -12,14 +12,14 @@ jobs:
       CCACHE_HARDLINK: "true"
       KERNEL_DEFCONFIG: star2qlte_chn_open_defconfig"
       KERNEL_CMDLINE: "ARCH=arm64 CC=clang LLVM=1 LLVM_IAS=1 CROSS_COMPILE=aarch64-linux-gnu- LD_LIBRARY_PATH=/usr/lib/llvm-20/lib/ O=out"
-      EXTRAVERSION: "-debug"
+      EXTRAVERSION: "-test"
     
     steps:
       - name: Checkout
         uses: actions/checkout@v4
         with:
           repository: Andrey0800770/samsung_sdm845-kernel
-          ref: debug
+          ref: test
           submodules: "false"
           fetch-depth: 100
 
