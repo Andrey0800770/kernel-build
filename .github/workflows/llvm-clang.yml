@@ -57,6 +57,7 @@ jobs:
           rm -rf AnyKernel3/.git* AnyKernel3/README.md
       - name: Build Kernel-With-KernelSU
         run: |
+          make mrproper
           make $KERNEL_CMDLINE $KERNEL_DEFCONFIG CC="ccache clang"
           make $KERNEL_CMDLINE CC="ccache clang" -j$(nproc --all)
           cp out/arch/arm64/boot/Image.gz-dtb AnyKernel3
