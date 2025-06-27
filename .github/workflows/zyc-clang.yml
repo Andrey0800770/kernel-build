@@ -11,20 +11,12 @@ jobs:
       contents: read
 
     steps:
-    - name: Set-up cache for kernel
-      id: kernel-cache
-      uses: actions/cache@v4.2.0
-      with:
-        path: kernel/sdm845
-        key: main-1005
-        restore-keys: |
-          main
-          
     - name: Build Kernel
       uses: Andrey0800770/kernel_build_action@main
       with:
+          kernel-url: https://github.com/Andrey0800770/samsung_sdm845-kernel
           kernel-dir: sdm845
-          kernel-branch: test
+          kernel-branch: dev
           config: star2qlte_chn_open_defconfig
           arch: arm64
           clang-tar: https://github.com/ZyCromerZ/Clang/releases/download/21.0.0git-20250519-release/Clang-21.0.0git-20250519.tar.gz
@@ -32,4 +24,4 @@ jobs:
           cflags: "CC=clang CROSS_COMPILE=aarch64-linux-gnu-"
           python: python2
           anykernel3: true
-          extra-version: -teste
+          extra-version: -dev
