@@ -21,7 +21,7 @@ jobs:
           arch: arm64
           clang-tar: https://github.com/ZyCromerZ/Clang/releases/download/21.0.0git-20250626-release/Clang-21.0.0git-20250626.tar.gz
           path: $CLANG:$PATH
-          cflags: "CC=clang LLVM=1 CROSS_COMPILE=aarch64-linux-gnu-"
+          cflags: "CC=clang LLVM=1 CROSS_COMPILE=aarch64-linux-gnu- -fno-builtin"
           python: python2
           anykernel3: true
           extra-version: -dev
