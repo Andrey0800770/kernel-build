@@ -11,7 +11,7 @@ jobs:
       CCACHE_MAXSIZE: "4G"
       CCACHE_HARDLINK: "true"
       KERNEL_DEFCONFIG: "star2qlte_chn_open_defconfig"
-      KERNEL_CMDLINE: "ARCH=arm64 O=out AS=clang AR=llvm-ar NM=llvm-nm LD=ld.lld OBJCOPY=llvm-objcopy OBJDUMP=llvm-objdump STRIP=llvm-strip CLANG_TRIPLE=aarch64-linux-gnu- CROSS_COMPILE=aarch64-linux-gnu- CROSS_COMPILE_ARM32=arm-linux-gnueabi- CROSS_COMPILE_COMPAT=arm-linux-gnueabi- LLVM=1"
+      KERNEL_CMDLINE: "ARCH=arm64 O=out AS=clang AR=llvm-ar NM=llvm-nm LD=ld.bfd OBJCOPY=llvm-objcopy OBJDUMP=llvm-objdump STRIP=llvm-strip CLANG_TRIPLE=aarch64-linux-gnu- CROSS_COMPILE=aarch64-linux-gnu- CROSS_COMPILE_ARM32=arm-linux-gnueabi- CROSS_COMPILE_COMPAT=arm-linux-gnueabi- LLVM=1"
       EXTRAVERSION: "-dev"
     
     steps:
