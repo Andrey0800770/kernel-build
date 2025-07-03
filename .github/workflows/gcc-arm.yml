@@ -1,4 +1,4 @@
-name: Build Kernel
+name: Gcc-Arm
 on:
   workflow_dispatch:
 
