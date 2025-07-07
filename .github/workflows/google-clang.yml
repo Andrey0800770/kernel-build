@@ -11,15 +11,15 @@ jobs:
       CCACHE_MAXSIZE: "4G"
       CCACHE_HARDLINK: "true"
       KERNEL_DEFCONFIG: "star2qlte_chn_open_defconfig"
-      KERNEL_CMDLINE: "ARCH=arm64 CC=clang LLVM=1 O=out"
-      EXTRAVERSION: "-debug"
+      KERNEL_CMDLINE: "CC=clang LLVM=1 O=out"
+      EXTRAVERSION: "-Dev"
     
     steps:
       - name: Checkout
         uses: actions/checkout@v4
         with:
           repository: Andrey0800770/samsung_sdm845-kernel
-          ref: debug
+          ref: dev
           submodules: "false"
           fetch-depth: 100
 
@@ -39,9 +39,9 @@ jobs:
           sudo apt install gcc-aarch64-linux-gnu -y
           sudo apt install gcc-arm-linux-gnueabi -y
           sudo apt install aria2 binutils make python3 libssl-dev build-essential bc bison flex unzip libssl-dev ca-certificates xz-utils mkbootimg cpio device-tree-compiler git git-lfs -y
-          aria2c -j$(nproc --all) https://android.googlesource.com/platform/prebuilts/clang/host/linux-x86/+archive/62cdcefa89e31af2d72c366e8b5ef8db84caea62/clang-r547379.tar.gz -o clang-r547379.tar.gz
+          aria2c -j$(nproc --all) https://android.googlesource.com/platform/prebuilts/clang/host/linux-x86/+archive/0998f421320ae02fddabec8a78b91bf7620159f6/clang-r563880.tar.gz -o clang.tar.gz
           mkdir zyc-clang
-          tar -xzvf clang-r547379.tar.gz -C zyc-clang >> /dev/null
+          tar -xzvf clang.tar.gz -C zyc-clang >> /dev/null
           git clone https://github.com/osm0sis/AnyKernel3
           sed -i 's/do.devicecheck=1/do.devicecheck=0/g' AnyKernel3/anykernel.sh
           sed -i 's!BLOCK=/dev/block/platform/omap/omap_hsmmc.0/by-name/boot;!BLOCK=auto;!g' AnyKernel3/anykernel.sh
