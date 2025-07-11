@@ -41,7 +41,7 @@ jobs:
           deb http://security.ubuntu.com/ubuntu/ noble-security main restricted universe multiverse
           EOF
           sudo apt-get update -y 
-          sudo apt install ccache libhiredis1.1.0 gcc-arm-linux-gnueabi gcc-aarch64-linux-gnu -y
+          sudo apt install ccache libhiredis1.1.0 -y
           sudo dpkg -l | grep clang | awk '{print $2}' | xargs sudo apt-get remove -y
           wget https://apt.llvm.org/llvm.sh && chmod +x llvm.sh && sudo ./llvm.sh 20
           curl -L -o register_clang.sh https://raw.githubusercontent.com/Andrey0800770/kernel-build/main/files/update-alternatives.sh && chmod +x register_clang.sh && sudo bash -c 'set +e; for tool in clang++ clang-format clang-cpp clang-cl clangd clang-tidy clang-check clang-query asan_symbolize bugpoint dsymutil lld ld.lld lld-link llc lli obj2yaml opt sanstats verify-uselistorder wasm-ld yaml2obj; do update-alternatives --query $tool >/dev/null 2>&1 && update-alternatives --remove $tool /usr/bin/$tool-20 || true; done; ./register_clang.sh 20 1000 || true'
