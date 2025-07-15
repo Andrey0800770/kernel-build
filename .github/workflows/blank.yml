@@ -1,0 +1,232 @@
+name: Build Android APK
+
+on:
+  workflow_dispatch:
+    inputs:
+      package_name:
+        description: 'Nome do pacote Android (ex: com.exemplo.meuapp)'
+        required: true
+        default: 'com.exemplo.meuapp'
+      app_name:
+        description: 'Nome do app (ex: Meu App)'
+        required: true
+        default: 'Meu App'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Set up JDK 11
+      uses: actions/setup-java@v4
+      with:
+        java-version: '11'
+        distribution: 'temurin'
+        
+    - name: Setup Android SDK
+      uses: android-actions/setup-android@v3
+      
+    - name: Create Android project structure
+      run: |
+        # Criar estrutura de diretórios
+        mkdir -p app/src/main/java/$(echo ${{ github.event.inputs.package_name }} | tr '.' '/')
+        mkdir -p app/src/main/res/layout
+        mkdir -p app/src/main/res/values
+        mkdir -p app/src/main/res/mipmap-hdpi
+        mkdir -p app/src/main/res/mipmap-mdpi
+        mkdir -p app/src/main/res/mipmap-xhdpi
+        mkdir -p app/src/main/res/mipmap-xxhdpi
+        mkdir -p app/src/main/res/mipmap-xxxhdpi
+        
+        # Criar MainActivity
+        cat > app/src/main/java/$(echo ${{ github.event.inputs.package_name }} | tr '.' '/')/MainActivity.java << 'EOF'
+        package ${{ github.event.inputs.package_name }};
+
+        import android.app.Activity;
+        import android.os.Bundle;
+        import android.widget.TextView;
+
+        public class MainActivity extends Activity {
+            @Override
+            protected void onCreate(Bundle savedInstanceState) {
+                super.onCreate(savedInstanceState);
+                
+                TextView textView = new TextView(this);
+                textView.setText("${{ github.event.inputs.app_name }}");
+                textView.setTextSize(24);
+                textView.setGravity(android.view.Gravity.CENTER);
+                
+                setContentView(textView);
+            }
+        }
+        EOF
+        
+        # Criar AndroidManifest.xml
+        cat > app/src/main/AndroidManifest.xml << 'EOF'
+        <?xml version="1.0" encoding="utf-8"?>
+        <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+            package="${{ github.event.inputs.package_name }}"
+            android:versionCode="1"
+            android:versionName="1.0">
+
+            <uses-sdk
+                android:minSdkVersion="21"
+                android:targetSdkVersion="33" />
+
+            <application
+                android:allowBackup="true"
+                android:icon="@mipmap/ic_launcher"
+                android:label="${{ github.event.inputs.app_name }}"
+                android:theme="@android:style/Theme.Material.Light">
+                
+                <activity
+                    android:name=".MainActivity"
+                    android:exported="true">
+                    <intent-filter>
+                        <action android:name="android.intent.action.MAIN" />
+                        <category android:name="android.intent.category.LAUNCHER" />
+                    </intent-filter>
+                </activity>
+            </application>
+        </manifest>
+        EOF
+        
+        # Criar strings.xml
+        cat > app/src/main/res/values/strings.xml << 'EOF'
+        <?xml version="1.0" encoding="utf-8"?>
+        <resources>
+            <string name="app_name">${{ github.event.inputs.app_name }}</string>
+        </resources>
+        EOF
+        
+    - name: Create simple launcher icon
+      run: |
+        # Criar um ícone simples usando ImageMagick
+        sudo apt-get update
+        sudo apt-get install -y imagemagick
+        
+        # Criar ícones para diferentes densidades
+        convert -size 72x72 xc:blue -fill white -pointsize 24 -gravity center -annotate +0+0 "APP" app/src/main/res/mipmap-hdpi/ic_launcher.png
+        convert -size 48x48 xc:blue -fill white -pointsize 16 -gravity center -annotate +0+0 "APP" app/src/main/res/mipmap-mdpi/ic_launcher.png
+        convert -size 96x96 xc:blue -fill white -pointsize 32 -gravity center -annotate +0+0 "APP" app/src/main/res/mipmap-xhdpi/ic_launcher.png
+        convert -size 144x144 xc:blue -fill white -pointsize 48 -gravity center -annotate +0+0 "APP" app/src/main/res/mipmap-xxhdpi/ic_launcher.png
+        convert -size 192x192 xc:blue -fill white -pointsize 64 -gravity center -annotate +0+0 "APP" app/src/main/res/mipmap-xxxhdpi/ic_launcher.png
+        
+    - name: Create build.gradle files
+      run: |
+        # Criar build.gradle do projeto
+        cat > build.gradle << 'EOF'
+        buildscript {
+            repositories {
+                google()
+                mavenCentral()
+            }
+            dependencies {
+                classpath 'com.android.tools.build:gradle:7.4.2'
+            }
+        }
+
+        allprojects {
+            repositories {
+                google()
+                mavenCentral()
+            }
+        }
+
+        task clean(type: Delete) {
+            delete rootProject.buildDir
+        }
+        EOF
+        
+        # Criar build.gradle do app
+        cat > app/build.gradle << 'EOF'
+        plugins {
+            id 'com.android.application'
+        }
+
+        android {
+            namespace '${{ github.event.inputs.package_name }}'
+            compileSdk 33
+
+            defaultConfig {
+                applicationId '${{ github.event.inputs.package_name }}'
+                minSdk 21
+                targetSdk 33
+                versionCode 1
+                versionName "1.0"
+            }
+
+            buildTypes {
+                release {
+                    minifyEnabled false
+                    signingConfig signingConfigs.debug
+                }
+            }
+            
+            compileOptions {
+                sourceCompatibility JavaVersion.VERSION_1_8
+                targetCompatibility JavaVersion.VERSION_1_8
+            }
+        }
+        EOF
+        
+        # Criar settings.gradle
+        cat > settings.gradle << 'EOF'
+        pluginManagement {
+            repositories {
+                gradlePluginPortal()
+                google()
+                mavenCentral()
+            }
+        }
+        dependencyResolutionManagement {
+            repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+            repositories {
+                google()
+                mavenCentral()
+            }
+        }
+
+        rootProject.name = "${{ github.event.inputs.app_name }}"
+        include ':app'
+        EOF
+        
+        # Criar gradle.properties
+        cat > gradle.properties << 'EOF'
+        org.gradle.jvmargs=-Xmx2048m -Dfile.encoding=UTF-8
+        android.useAndroidX=true
+        android.enableJetifier=true
+        EOF
+        
+    - name: Create Gradle Wrapper
+      run: |
+        # Baixar e configurar Gradle Wrapper
+        gradle wrapper --gradle-version 7.6.1
+        
+    - name: Make Gradle executable
+      run: chmod +x ./gradlew
+      
+    - name: Build APK
+      run: ./gradlew assembleRelease
+      
+    - name: Upload APK
+      uses: actions/upload-artifact@v4
+      with:
+        name: app-release-${{ github.event.inputs.package_name }}
+        path: app/build/outputs/apk/release/app-release.apk
+        
+    - name: Create Release
+      if: github.ref == 'refs/heads/main'
+      uses: softprops/action-gh-release@v1
+      with:
+        tag_name: v1.0-${{ github.run_number }}
+        name: Release ${{ github.event.inputs.app_name }} v1.0-${{ github.run_number }}
+        files: app/build/outputs/apk/release/app-release.apk
+        body: |
+          APK gerado para o pacote: ${{ github.event.inputs.package_name }}
+          Nome do app: ${{ github.event.inputs.app_name }}
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
