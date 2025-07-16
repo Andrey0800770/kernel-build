@@ -37,7 +37,7 @@ jobs:
           EOF
           sudo apt-get update -y 
           sudo apt install aria2 binutils make python3 libssl-dev build-essential bc bison flex unzip libssl-dev ca-certificates xz-utils mkbootimg cpio device-tree-compiler git git-lfs -y
-          aria2c -j$(nproc --all) https://android.googlesource.com/platform/prebuilts/clang/host/linux-x86/+archive/0998f421320ae02fddabec8a78b91bf7620159f6/clang-r563880.tar.gz -o clang.tar.gz
+          aria2c -j$(nproc --all) https://android.googlesource.com/platform/prebuilts/clang/host/linux-x86/+archive/20052113d2a5552cfff78ac7b21fd7953cc1c592/clang-r563880.tar.gz -o clang.tar.gz
           mkdir zyc-clang
           tar -xzvf clang.tar.gz -C zyc-clang >> /dev/null
           git clone https://github.com/osm0sis/AnyKernel3
