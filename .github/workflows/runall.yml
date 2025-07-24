@@ -1,4 +1,4 @@
-name: Compile All S9/S9+ kernels
+name: Compile All S9/S9+/N9 kernels
 
 on: [workflow_dispatch]
 
@@ -13,24 +13,59 @@ jobs:
           - starqlte_usa_single_defconfig
           - star2qlte_usa_single_defconfig
           - starqlte_jpn_defconfig
-    runs-on: ubuntu-22.04
-    permissions:
-      contents: read
+          - crownqlte_chn_open_defconfig
+
+    runs-on: ubuntu-latest
+    env:
+      CCACHE_COMPILERCHECK: "%compiler% -dumpmachine; %compiler% -dumpversion"
+      CCACHE_NOHASHDIR: "true"
+      CCACHE_MAXSIZE: "4G"
+      CCACHE_HARDLINK: "true"
+      KERNEL_DEFCONFIG: "${{ matrix.config }}"
+      KERNEL_CMDLINE: "ARCH=arm64 CC=clang LLVM=1 O=out"
+      EXTRAVERSION: "-Rel8"
+
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
-        
-      - name: Run kernel build action
-        uses: Andrey0800770/kernel_build_action@main
+      - name: Checkout
+        uses: actions/checkout@v4
         with:
-          kernel-url: https://github.com/Andrey0800770/samsung_sdm845-kernel
-          kernel-dir: sdm845
-          kernel-branch: ksu+susfs
-          config: ${{ matrix.config }}
-          arch: arm64
-          clang-tar: https://github.com/ZyCromerZ/Clang/releases/download/21.0.0git-20250519-release/Clang-21.0.0git-20250519.tar.gz
-          path: $CLANG:$PATH
-          cflags: "CC=clang CROSS_COMPILE=aarch64-linux-gnu-"
-          python: python2
-          anykernel3: true
-          extra-version: -Rel7
+          repository: Andrey0800770/samsung_sdm845-kernel
+          ref: ksu+susfs
+          submodules: "false"
+          fetch-depth: 100
+
+      - name: Set up ccache
+        uses: hendrikmuhs/ccache-action@v1.2
+
+      - name: Install dependencies
+        run: |
+          sed -i 's/EXTRAVERSION =.*/EXTRAVERSION = ${{ env.EXTRAVERSION }}/' Makefile
+          sudo tee /etc/apt/sources.list > /dev/null <<EOF
+          deb http://archive.ubuntu.com/ubuntu/ noble main restricted universe multiverse
+          deb http://archive.ubuntu.com/ubuntu/ noble-updates main restricted universe multiverse
+          deb http://archive.ubuntu.com/ubuntu/ noble-backports main restricted universe multiverse
+          deb http://security.ubuntu.com/ubuntu/ noble-security main restricted universe multiverse
+          EOF
+          sudo apt-get update -y
+          sudo apt install aria2 binutils make python3 libssl-dev build-essential bc bison flex unzip libssl-dev ca-certificates xz-utils mkbootimg cpio device-tree-compiler git git-lfs -y
+          aria2c -j$(nproc --all) https://android.googlesource.com/platform/prebuilts/clang/host/linux-x86/+archive/20052113d2a5552cfff78ac7b21fd7953cc1c592/clang-r563880.tar.gz -o clang.tar.gz
+          mkdir zyc-clang
+          tar -xzvf clang.tar.gz -C zyc-clang >> /dev/null
+          git clone https://github.com/osm0sis/AnyKernel3
+          sed -i 's/do.devicecheck=1/do.devicecheck=0/g' AnyKernel3/anykernel.sh
+          sed -i 's!BLOCK=/dev/block/platform/omap/omap_hsmmc.0/by-name/boot;!BLOCK=auto;!g' AnyKernel3/anykernel.sh
+          sed -i 's/IS_SLOT_DEVICE=0;/IS_SLOT_DEVICE=auto;/g' AnyKernel3/anykernel.sh
+          rm -rf AnyKernel3/.git* AnyKernel3/README.md
+
+      - name: Build Kernel-With-KernelSU
+        run: |
+          export PATH=$(pwd)/zyc-clang/bin/:$PATH
+          make $KERNEL_CMDLINE $KERNEL_DEFCONFIG CC="ccache clang"
+          make $KERNEL_CMDLINE CC="ccache clang" -j$(nproc --all)
+          cp out/arch/arm64/boot/Image.gz-dtb AnyKernel3
+
+      - name: Upload Kernel
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ env.KERNEL_DEFCONFIG }}
+          path: "AnyKernel3/*"
