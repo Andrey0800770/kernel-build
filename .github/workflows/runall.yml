@@ -17,10 +17,6 @@ jobs:
 
     runs-on: ubuntu-latest
     env:
-      CCACHE_COMPILERCHECK: "%compiler% -dumpmachine; %compiler% -dumpversion"
-      CCACHE_NOHASHDIR: "true"
-      CCACHE_MAXSIZE: "4G"
-      CCACHE_HARDLINK: "true"
       KERNEL_DEFCONFIG: "${{ matrix.config }}"
       KERNEL_CMDLINE: "ARCH=arm64 CC=clang LLVM=1 O=out"
       EXTRAVERSION: "-Rel8"
@@ -48,9 +44,9 @@ jobs:
           EOF
           sudo apt-get update -y
           sudo apt install aria2 binutils make python3 libssl-dev build-essential bc bison flex unzip libssl-dev ca-certificates xz-utils mkbootimg cpio device-tree-compiler git git-lfs -y
-          aria2c -j$(nproc --all) https://android.googlesource.com/platform/prebuilts/clang/host/linux-x86/+archive/20052113d2a5552cfff78ac7b21fd7953cc1c592/clang-r563880.tar.gz -o clang.tar.gz
-          mkdir zyc-clang
-          tar -xzvf clang.tar.gz -C zyc-clang >> /dev/null
+          aria2c -j$(nproc --all) https://android.googlesource.com/platform/prebuilts/clang/host/linux-x86/+archive/67af9f576276f27363074c4388e2cf0963bab6df/clang-r563880b.tar.gz -o clang.tar.gz
+          mkdir clang
+          tar -xzvf clang.tar.gz -C clang >> /dev/null
           git clone https://github.com/osm0sis/AnyKernel3
           sed -i 's/do.devicecheck=1/do.devicecheck=0/g' AnyKernel3/anykernel.sh
           sed -i 's!BLOCK=/dev/block/platform/omap/omap_hsmmc.0/by-name/boot;!BLOCK=auto;!g' AnyKernel3/anykernel.sh
@@ -59,9 +55,9 @@ jobs:
 
       - name: Build Kernel-With-KernelSU
         run: |
-          export PATH=$(pwd)/zyc-clang/bin/:$PATH
-          make $KERNEL_CMDLINE $KERNEL_DEFCONFIG CC="ccache clang"
-          make $KERNEL_CMDLINE CC="ccache clang" -j$(nproc --all)
+          export PATH=$(pwd)/clang/bin/:$PATH
+          make $KERNEL_CMDLINE $KERNEL_DEFCONFIG CC="clang"
+          make $KERNEL_CMDLINE CC="clang" -j$(nproc --all)
           cp out/arch/arm64/boot/Image.gz-dtb AnyKernel3
 
       - name: Upload Kernel
