@@ -19,7 +19,7 @@ jobs:
     env:
       KERNEL_DEFCONFIG: "${{ matrix.config }}"
       KERNEL_CMDLINE: "ARCH=arm64 CC=clang LLVM=1 O=out"
-      EXTRAVERSION: "-Rel8"
+      EXTRAVERSION: "-Rel8.1"
 
     steps:
       - name: Checkout
@@ -44,11 +44,8 @@ jobs:
           aria2c -j$(nproc --all) https://android.googlesource.com/platform/prebuilts/clang/host/linux-x86/+archive/67af9f576276f27363074c4388e2cf0963bab6df/clang-r563880b.tar.gz -o clang.tar.gz
           mkdir clang
           tar -xzvf clang.tar.gz -C clang >> /dev/null
-          git clone https://github.com/osm0sis/AnyKernel3
-          sed -i 's/do.devicecheck=1/do.devicecheck=0/g' AnyKernel3/anykernel.sh
-          sed -i 's!BLOCK=/dev/block/platform/omap/omap_hsmmc.0/by-name/boot;!BLOCK=auto;!g' AnyKernel3/anykernel.sh
-          sed -i 's/IS_SLOT_DEVICE=0;/IS_SLOT_DEVICE=auto;/g' AnyKernel3/anykernel.sh
-          rm -rf AnyKernel3/.git* AnyKernel3/README.md
+          git clone https://github.com/Andrey0800770/kernel-build/ -b anykernel AnyKernel3
+          rm -rf AnyKernel3/.git*
 
       - name: Build Kernel-With-KernelSU
         run: |
