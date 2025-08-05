@@ -1,4 +1,4 @@
-name: ZyC Clang
+name: Build Test
 on:
   workflow_dispatch:
 
