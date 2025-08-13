@@ -46,8 +46,10 @@ jobs:
           sed -i 's/IS_SLOT_DEVICE=0;/is_slot_device=auto;/g' AnyKernel3/anykernel.sh
           rm -rf AnyKernel3/.git* AnyKernel3/README.md
       - name: Build Kernel-With-KernelSU
+        env:
+          USER: "andrey"
+          HOSTNAME: "linux"
         run: |
-          export USER=andrey HOSTNAME=linux
           export PATH=$(pwd)/zyc-clang/bin/:$PATH
           make $KERNEL_CMDLINE $KERNEL_DEFCONFIG CC="ccache clang"
           make $KERNEL_CMDLINE CC="ccache clang" -j$(nproc --all)
