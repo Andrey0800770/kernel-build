@@ -46,13 +46,10 @@ jobs:
           sed -i 's/IS_SLOT_DEVICE=0;/is_slot_device=auto;/g' AnyKernel3/anykernel.sh
           rm -rf AnyKernel3/.git* AnyKernel3/README.md
       - name: Build Kernel-With-KernelSU
-        env:
-          USER: "andrey"
-          HOSTNAME: "linux"
         run: |
-          echo "USER: $USER"
-          echo "HOSTNAME: $HOSTNAME"
           export PATH=$(pwd)/zyc-clang/bin/:$PATH
+          export KBUILD_BUILD_USER="andrey"
+          export KBUILD_BUILD_HOST="linux"
           make $KERNEL_CMDLINE $KERNEL_DEFCONFIG CC="ccache clang"
           make $KERNEL_CMDLINE CC="ccache clang" -j$(nproc --all)
           cp out/arch/arm64/boot/Image.gz-dtb AnyKernel3
