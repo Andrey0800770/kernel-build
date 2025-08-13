@@ -28,6 +28,7 @@ jobs:
 
       - name: Install dependencies
         run: |
+          export USER=andrey HOSTNAME=linux
           sed -i 's/EXTRAVERSION =.*/EXTRAVERSION = ${{ env.EXTRAVERSION }}/' Makefile
           sudo tee /etc/apt/sources.list > /dev/null <<EOF
           deb http://archive.ubuntu.com/ubuntu/ noble main restricted universe multiverse
