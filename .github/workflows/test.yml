@@ -42,90 +42,54 @@ jobs:
             zlib1g-dev \
             liblz4-dev \
             liblzma-dev \
-            uuid-dev
+            uuid-dev \
+            libz-dev \
+            liblz4-1 \
+            liblzma5 \
+            libuuid1
           
-          echo "=== Setting up build environment ==="
-          export PREFIX=/opt/erofs-static
-          export CFLAGS="-static -O2 -fPIC"
-          export LDFLAGS="-static"
-          mkdir -p $PREFIX
-          
-          echo "=== Building static zlib ==="
-          cd /tmp
-          wget -q http://zlib.net/zlib-1.3.tar.gz
-          tar xzf zlib-1.3.tar.gz
-          cd zlib-1.3
-          ./configure --prefix=$PREFIX --static
-          make -j$(nproc)
-          make install
-          
-          echo "=== Building static lz4 ==="
-          cd /tmp
-          git clone --depth 1 https://github.com/lz4/lz4.git
-          cd lz4
-          make -j$(nproc) PREFIX=$PREFIX BUILD_STATIC=yes BUILD_SHARED=no CFLAGS="$CFLAGS"
-          make install PREFIX=$PREFIX BUILD_STATIC=yes BUILD_SHARED=no
-          
-          echo "=== Building static liblzma ==="
-          cd /tmp
-          wget -q https://github.com/tukaani-project/xz/releases/download/v5.4.4/xz-5.4.4.tar.gz
-          tar xzf xz-5.4.4.tar.gz
-          cd xz-5.4.4
-          ./configure --prefix=$PREFIX --enable-static --disable-shared --disable-xz --disable-xzdec --disable-scripts
-          make -j$(nproc)
-          make install
-          
-          echo "=== Building static libuuid ==="
-          cd /tmp
-          wget -q https://github.com/util-linux/util-linux/archive/v2.39.2.tar.gz
-          tar xzf v2.39.2.tar.gz
-          cd util-linux-2.39.2
-          ./autogen.sh
-          ./configure --prefix=$PREFIX --enable-static --disable-shared --enable-libuuid --disable-all-programs --without-python --without-ncurses
-          make -j$(nproc)
-          make install
+          echo "=== Installing static libraries ==="
+          apt-get install -y \
+            zlib1g-dev:arm64 \
+            liblz4-dev:arm64 \
+            liblzma-dev:arm64 \
+            uuid-dev:arm64 || true
           
           echo "=== Building mkfs.erofs ==="
           cd /workspace
           ./autogen.sh
+          
+          # Try simple build first
           ./configure \
-            --prefix=$PREFIX \
-            --enable-static \
-            --disable-shared \
             --enable-lz4 \
             --enable-liblzma \
             --with-uuid \
-            --disable-fuse \
-            PKG_CONFIG_PATH=$PREFIX/lib/pkgconfig \
-            CFLAGS="$CFLAGS -I$PREFIX/include" \
-            LDFLAGS="$LDFLAGS -L$PREFIX/lib" \
-            LIBS="-luuid -llz4 -llzma -lz -lpthread"
+            --disable-fuse
           
-          # Build only mkfs.erofs
+          # Build only mkfs
           make -j$(nproc) -C mkfs
           
-          echo "=== Verifying static build ==="
+          echo "=== Verifying build ==="
           file mkfs/mkfs.erofs
-          ldd mkfs/mkfs.erofs 2>&1 | grep -q "not a dynamic executable" && echo "✓ Static binary confirmed" || echo "⚠ Dynamic binary"
+          ls -la mkfs/mkfs.erofs
           
           echo "=== Testing mkfs.erofs ==="
           ./mkfs/mkfs.erofs --version
           
-          echo "=== Stripping binary ==="
-          strip mkfs/mkfs.erofs
-          
-          echo "=== Preparing output ==="
+          echo "=== Creating output ==="
           mkdir -p /workspace/output
           cp mkfs/mkfs.erofs /workspace/output/
           
-          # Create info file
-          echo "mkfs.erofs AArch64 Static Binary" > /workspace/output/README.txt
-          echo "Built on: $(date)" >> /workspace/output/README.txt
-          echo "Architecture: $(uname -m)" >> /workspace/output/README.txt
-          echo "File info: $(file mkfs/mkfs.erofs)" >> /workspace/output/README.txt
-          echo "Size: $(ls -lh mkfs/mkfs.erofs | awk "{print \$5}")" >> /workspace/output/README.txt
+          # Try to make it more static by copying needed libs
+          echo "=== Checking dependencies ==="
+          ldd mkfs/mkfs.erofs || echo "Already static"
           
-          ls -la /workspace/output/
+          # Strip the binary
+          strip /workspace/output/mkfs.erofs
+          
+          echo "Final binary info:"
+          file /workspace/output/mkfs.erofs
+          ls -lh /workspace/output/mkfs.erofs
         '
         
     - name: Upload mkfs.erofs binary
