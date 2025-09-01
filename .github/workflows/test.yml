@@ -44,6 +44,111 @@ jobs:
             liblz4-dev \
             liblzma-dev \
             uuid-dev \
+            libssl-dev \
+            libfuse-dev
+          
+          echo "=== Building mkfs.erofs ==="
+          cd /workspace
+          ./autogen.sh
+          
+          # Configure with static linking flags
+          ./configure \
+            --enable-lz4 \
+            --enable-liblzma \
+            --with-uuid \
+            --disable-fuse \
+            --enable-static \
+            --disable-shared \
+            LDFLAGS="-static" \
+            CFLAGS="-static"
+          
+          # Build only mkfs
+          make -j$(nproc) -C mkfs
+          
+          echo "=== Verifying build ==="
+          file mkfs/mkfs.erofs
+          ls -la mkfs/mkfs.erofs
+          
+          echo "=== Testing mkfs.erofs ==="
+          ./mkfs/mkfs.erofs --version
+          
+          echo "=== Creating output ==="
+          mkdir -p /workspace/output
+          cp mkfs/mkfs.erofs /workspace/output/
+          
+          # Check dependencies
+          echo "=== Checking dependencies ==="
+          ldd mkfs/mkfs.erofs || echo "Binary is static"
+          
+          # Strip the binary to reduce size
+          strip /workspace/output/mkfs.erofs
+          
+          echo "=== Final binary info ==="
+          file /workspace/output/mkfs.erofs
+          ls -lh /workspace/output/mkfs.erofs
+        '
+        
+    - name: Upload mkfs.erofs binary
+      uses: actions/upload-artifact@v4
+      with:
+        name: mkfs.erofs-aarch64-static
+        path: output/
+        retention-days: 30
+        
+    - name: Create release (on tags)
+      if: startsWith(github.ref, 'refs/tags/')
+      uses: softprops/action-gh-release@v1
+      with:
+        files: output/*
+        name: "mkfs.erofs AArch64 Static ${{ github.ref_name }}"
+        body: |
+          ## mkfs.erofs AArch64 Static Binary
+          
+          - **Architecture:** aarch64 (ARM64)
+          - **Type:** Static binary (minimal dependencies)
+          - **Compatible with:** Linux ARM64, Android (Termux), embedded systems
+          - **Built from:** erofs-utils repository (master branch)
+          
+          ### Features
+          - LZ4 compression support
+          - LZMA compression support
+          - UUID support
+          - Optimized for size and portability
+          
+          ### Usage
+          ```bash
+          # Make executable
+          chmod +x mkfs.erofs
+          
+          # Show help
+          ./mkfs.erofs --help
+          
+          # Create EROFS image with LZ4HC compression
+          ./mkfs.erofs -zlz4hc output.erofs input_directory/
+          
+          # Create EROFS image with LZMA compression
+          ./mkfs.erofs -zlzma output.erofs input_directory/
+          ```
+          
+          ### Verification
+          ```bash
+          # Check binary info
+          file mkfs.erofs
+          
+          # Check version
+          ./mkfs.erofs --version
+          ```
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}            autoconf \
+            automake \
+            libtool \
+            pkg-config \
+            git \
+            wget \
+            zlib1g-dev \
+            liblz4-dev \
+            liblzma-dev \
+            uuid-dev \
             libz-dev \
             liblz4-1 \
             liblzma5 \
