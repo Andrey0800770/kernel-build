@@ -1,67 +1,52 @@
-name: Update Cache
+name: erofs-utils ARM64
 
 on:
-  workflow_dispatch:
-    inputs:
-      clang_url:
-        description: 'URL para download do Clang'
-        required: true
-        default: 'https://android.googlesource.com/platform/prebuilts/clang/host/linux-x86/+archive/62cdcefa89e31af2d72c366e8b5ef8db84caea62/clang-r547379.tar.gz'
-      update_clang_cache:
-        description: 'Atualizar cache do Clang?'
-        type: boolean
-        required: true
-        default: false
-      update_kernel_cache:
-        description: 'Atualizar cache do Kernel?'
-        type: boolean
-        required: false
-        default: false
-      cache_key:
-        description: 'Chave personalizada para o cache'
-        required: false
-        default: ''
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
 
 jobs:
-  Build-Kernel:
-    strategy:
-      fail-fast: false
-    runs-on: ubuntu-22.04
-    permissions:
-      contents: read
+  build:
+    runs-on: ubuntu-22.04-arm64
 
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v4.2.0
+    - name: Checkout do código
+      uses: actions/checkout@v4
 
-    - name: Set-up cache for kernel
-      id: kernel-cache
-      uses: actions/cache@v4.2.0
-      with:
-        path: kernel/sdm845
-        key: ${{ github.event.inputs.cache_key }}
-        restore-keys: |
-          main
-
-    - name: Downloading kernel
-      if: steps.kernel-cache.outputs.cache-hit != 'true' || github.event.inputs.update_kernel_cache == 'true'
+    - name: Instalar dependências de build
       run: |
-        rm -rf kernel/sdm845
-        git clone --recursive https://github.com/Andrey0800770/samsung_sdm845-kernel -b main --depth=1 kernel/sdm845        
+        sudo apt-get update
+        sudo apt-get install -y \
+          autoconf \
+          automake \
+          libtool \
+          pkg-config \
+          libuuid-dev \
+          liblz4-dev \
+          liblzma-dev \
+          libzstd-dev \
+          zlib1g-dev \
+          libfuse-dev
 
-    - name: Set-Up clang cache
-      id: clang-cache
-      uses: actions/cache@v4.2.0
-      with:
-        path: /home/runner/clang
-        key: clang-${{ github.event.inputs.cache_key }}
-        restore-keys: |
-          clang-r547379
-      
-    - name: Downloading and extracting Clang
-      if: steps.clang-cache.outputs.cache-hit != 'true' || github.event.inputs.update_clang_cache == 'true'
+    - name: Configurar e compilar erofs-utils
       run: |
-        rm -rf /home/runner/clang
-        mkdir -p /home/runner/clang
-        URL=${{ github.event.inputs.clang_url }}
-        curl -L $URL -o "clang.tar" && tar -xz -C /home/runner/clang -f "clang.tar"
+        ./autogen.sh
+        ./configure --host=aarch64-linux-gnu --enable-static --without-uuid
+        make -j$(nproc)
+
+    - name: Criar diretório de artefatos
+      run: |
+        mkdir -p build/artifacts
+
+    - name: Empacotar os binários
+      run: |
+        make install DESTDIR=$(pwd)/build/artifacts
+
+    - name: Fazer upload dos artefatos
+      uses: actions/upload-artifact@v4
+      with:
+        name: erofs-utils-aarch64
+        path: build/artifacts/
