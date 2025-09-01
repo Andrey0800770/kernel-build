@@ -1,40 +1,147 @@
-name: erofs-utils ARM64
+name: Build EROFS-Utils Static AArch64
 
 on:
   push:
-    branches:
-      - main
+    branches: [ main, master ]
+    tags: [ 'v*' ]
   pull_request:
-    branches:
-      - main
+    branches: [ main, master ]
+  workflow_dispatch:
 
 jobs:
-  build:
-    runs-on: ubuntu-22.04-arm64
-
+  build-aarch64:
+    runs-on: ubuntu-latest
+    
     steps:
-    - name: Checkout do código
+    - name: Checkout erofs-utils
       uses: actions/checkout@v4
-
-    - name: Instalar dependências de build
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y \
-          autoconf \
-          automake \
-          libtool \
-          pkg-config \
-          libuuid-dev \
-          liblz4-dev \
-          liblzma-dev \
-          libzstd-dev \
-          zlib1g-dev \
-          libfuse-dev
-
-    - name: Configurar e compilar erofs-utils
-      run: |
-        ./autogen.sh
-        ./configure --host=aarch64-linux-gnu --enable-static --without-uuid
+      with:
+        repository: erofs/erofs-utils
+        
+    - name: Set up QEMU for cross-platform builds
+      uses: docker/setup-qemu-action@v3
+      with:
+        platforms: arm64
+        
+    - name: Build in AArch64 container
+      uses: docker://arm64v8/ubuntu:22.04
+      with:
+        args: /bin/bash -c "
+          set -e &&
+          export DEBIAN_FRONTEND=noninteractive &&
+          
+          echo '=== Installing dependencies ===' &&
+          apt-get update &&
+          apt-get install -y 
+            build-essential 
+            autoconf 
+            automake 
+            libtool 
+            pkg-config 
+            git 
+            wget 
+            zlib1g-dev 
+            liblz4-dev 
+            liblzma-dev 
+            uuid-dev 
+            libfuse-dev &&
+          
+          echo '=== Setting up build environment ===' &&
+          export PREFIX=/opt/erofs-static &&
+          export CFLAGS='-static -O2 -fPIC' &&
+          export LDFLAGS='-static' &&
+          mkdir -p \$PREFIX &&
+          
+          echo '=== Building static dependencies ===' &&
+          cd /tmp &&
+          
+          # Build static zlib
+          wget http://zlib.net/zlib-1.3.tar.gz &&
+          tar xzf zlib-1.3.tar.gz &&
+          cd zlib-1.3 &&
+          ./configure --prefix=\$PREFIX --static &&
+          make -j\$(nproc) &&
+          make install &&
+          cd .. &&
+          
+          # Build static lz4
+          git clone https://github.com/lz4/lz4.git &&
+          cd lz4 &&
+          make -j\$(nproc) PREFIX=\$PREFIX BUILD_STATIC=yes BUILD_SHARED=no &&
+          make install PREFIX=\$PREFIX BUILD_STATIC=yes BUILD_SHARED=no &&
+          cd .. &&
+          
+          # Build static liblzma
+          wget https://github.com/tukaani-project/xz/releases/download/v5.4.4/xz-5.4.4.tar.gz &&
+          tar xzf xz-5.4.4.tar.gz &&
+          cd xz-5.4.4 &&
+          ./configure --prefix=\$PREFIX --enable-static --disable-shared --disable-xz --disable-xzdec --disable-scripts &&
+          make -j\$(nproc) &&
+          make install &&
+          cd .. &&
+          
+          # Build static libuuid
+          wget https://github.com/util-linux/util-linux/archive/v2.39.2.tar.gz &&
+          tar xzf v2.39.2.tar.gz &&
+          cd util-linux-2.39.2 &&
+          ./autogen.sh &&
+          ./configure --prefix=\$PREFIX --enable-static --disable-shared --enable-libuuid --disable-all-programs --without-python --without-ncurses &&
+          make -j\$(nproc) &&
+          make install &&
+          cd .. &&
+          
+          echo '=== Building erofs-utils ===' &&
+          cd /github/workspace &&
+          ./autogen.sh &&
+          ./configure 
+            --prefix=\$PREFIX 
+            --enable-static 
+            --disable-shared 
+            --enable-lz4 
+            --enable-liblzma 
+            --with-uuid 
+            PKG_CONFIG_PATH=\$PREFIX/lib/pkgconfig 
+            CFLAGS='\$CFLAGS -I\$PREFIX/include' 
+            LDFLAGS='\$LDFLAGS -L\$PREFIX/lib' 
+            LIBS='-luuid -llz4 -llzma -lz -lpthread' &&
+          make -j\$(nproc) &&
+          
+          echo '=== Verifying static build ===' &&
+          file mkfs/mkfs.erofs &&
+          ldd mkfs/mkfs.erofs || echo 'Static binary confirmed' &&
+          
+          echo '=== Testing binaries ===' &&
+          ./mkfs/mkfs.erofs --version &&
+          ./dump/dump.erofs --version &&
+          ./fsck/fsck.erofs --version &&
+          
+          echo '=== Stripping binaries ===' &&
+          strip mkfs/mkfs.erofs dump/dump.erofs fsck/fsck.erofs &&
+          
+          echo '=== Creating output directory ===' &&
+          mkdir -p /github/workspace/output &&
+          cp mkfs/mkfs.erofs /github/workspace/output/ &&
+          cp dump/dump.erofs /github/workspace/output/ &&
+          cp fsck/fsck.erofs /github/workspace/output/ &&
+          ls -la /github/workspace/output/
+        "
+        
+    - name: Upload binaries as artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: erofs-utils-aarch64-static
+        path: output/
+        retention-days: 30
+        
+    - name: Create release (on tags)
+      if: startsWith(github.ref, 'refs/tags/')
+      uses: softprops/action-gh-release@v1
+      with:
+        files: output/*
+        draft: false
+        prerelease: false
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}        ./configure --host=aarch64-linux-gnu --enable-static --without-uuid
         make -j$(nproc)
 
     - name: Criar diretório de artefatos
