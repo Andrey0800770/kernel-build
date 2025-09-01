@@ -1,4 +1,4 @@
-name: Build EROFS-Utils Native AArch64
+name: Build mkfs.erofs Static AArch64
 
 on:
   push:
@@ -9,12 +9,8 @@ on:
   workflow_dispatch:
 
 jobs:
-  build-native-aarch64:
-    # Requires self-hosted runner with aarch64 or GitHub's larger runners
-    runs-on: 
-      - self-hosted
-      - ARM64
-    # Alternative: runs-on: ubuntu-latest-4-cores-arm
+  build-mkfs-aarch64:
+    runs-on: ubuntu-latest
     
     steps:
     - name: Checkout erofs-utils
@@ -22,137 +18,120 @@ jobs:
       with:
         repository: erofs/erofs-utils
         
-    - name: Install dependencies
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y \
-          build-essential \
-          autoconf \
-          automake \
-          libtool \
-          pkg-config \
-          git \
-          wget \
-          zlib1g-dev \
-          liblz4-dev \
-          liblzma-dev \
-          uuid-dev \
-          libfuse-dev
+    - name: Set up QEMU for multi-arch builds
+      uses: docker/setup-qemu-action@v3
+      with:
+        platforms: arm64
         
-    - name: Set up build environment
+    - name: Build mkfs.erofs in ARM64 Ubuntu container
       run: |
-        echo "PREFIX=$HOME/erofs-static" >> $GITHUB_ENV
-        echo "CFLAGS=-static -O2 -fPIC" >> $GITHUB_ENV
-        echo "LDFLAGS=-static" >> $GITHUB_ENV
-        mkdir -p $HOME/erofs-static
-        
-    - name: Build static zlib
-      run: |
-        cd /tmp
-        wget http://zlib.net/zlib-1.3.tar.gz
-        tar xzf zlib-1.3.tar.gz
-        cd zlib-1.3
-        ./configure --prefix=$PREFIX --static
-        make -j$(nproc)
-        make install
-        
-    - name: Build static lz4
-      run: |
-        cd /tmp
-        git clone https://github.com/lz4/lz4.git
-        cd lz4
-        make -j$(nproc) \
-          CFLAGS="$CFLAGS" \
-          PREFIX=$PREFIX \
-          BUILD_STATIC=yes \
-          BUILD_SHARED=no
-        make install \
-          PREFIX=$PREFIX \
-          BUILD_STATIC=yes \
-          BUILD_SHARED=no
+        docker run --rm --platform=linux/arm64 -v $PWD:/workspace -w /workspace ubuntu:22.04 bash -c '
+          set -e
+          export DEBIAN_FRONTEND=noninteractive
           
-    - name: Build static liblzma
-      run: |
-        cd /tmp
-        wget https://github.com/tukaani-project/xz/releases/download/v5.4.4/xz-5.4.4.tar.gz
-        tar xzf xz-5.4.4.tar.gz
-        cd xz-5.4.4
-        ./configure \
-          --prefix=$PREFIX \
-          --enable-static \
-          --disable-shared \
-          --disable-xz \
-          --disable-xzdec \
-          --disable-scripts
-        make -j$(nproc)
-        make install
+          echo "=== Installing dependencies ==="
+          apt-get update
+          apt-get install -y \
+            build-essential \
+            autoconf \
+            automake \
+            libtool \
+            pkg-config \
+            git \
+            wget \
+            zlib1g-dev \
+            liblz4-dev \
+            liblzma-dev \
+            uuid-dev
+          
+          echo "=== Setting up build environment ==="
+          export PREFIX=/opt/erofs-static
+          export CFLAGS="-static -O2 -fPIC"
+          export LDFLAGS="-static"
+          mkdir -p $PREFIX
+          
+          echo "=== Building static zlib ==="
+          cd /tmp
+          wget -q http://zlib.net/zlib-1.3.tar.gz
+          tar xzf zlib-1.3.tar.gz
+          cd zlib-1.3
+          ./configure --prefix=$PREFIX --static
+          make -j$(nproc)
+          make install
+          
+          echo "=== Building static lz4 ==="
+          cd /tmp
+          git clone --depth 1 https://github.com/lz4/lz4.git
+          cd lz4
+          make -j$(nproc) PREFIX=$PREFIX BUILD_STATIC=yes BUILD_SHARED=no CFLAGS="$CFLAGS"
+          make install PREFIX=$PREFIX BUILD_STATIC=yes BUILD_SHARED=no
+          
+          echo "=== Building static liblzma ==="
+          cd /tmp
+          wget -q https://github.com/tukaani-project/xz/releases/download/v5.4.4/xz-5.4.4.tar.gz
+          tar xzf xz-5.4.4.tar.gz
+          cd xz-5.4.4
+          ./configure --prefix=$PREFIX --enable-static --disable-shared --disable-xz --disable-xzdec --disable-scripts
+          make -j$(nproc)
+          make install
+          
+          echo "=== Building static libuuid ==="
+          cd /tmp
+          wget -q https://github.com/util-linux/util-linux/archive/v2.39.2.tar.gz
+          tar xzf v2.39.2.tar.gz
+          cd util-linux-2.39.2
+          ./autogen.sh
+          ./configure --prefix=$PREFIX --enable-static --disable-shared --enable-libuuid --disable-all-programs --without-python --without-ncurses
+          make -j$(nproc)
+          make install
+          
+          echo "=== Building mkfs.erofs ==="
+          cd /workspace
+          ./autogen.sh
+          ./configure \
+            --prefix=$PREFIX \
+            --enable-static \
+            --disable-shared \
+            --enable-lz4 \
+            --enable-liblzma \
+            --with-uuid \
+            --disable-fuse \
+            PKG_CONFIG_PATH=$PREFIX/lib/pkgconfig \
+            CFLAGS="$CFLAGS -I$PREFIX/include" \
+            LDFLAGS="$LDFLAGS -L$PREFIX/lib" \
+            LIBS="-luuid -llz4 -llzma -lz -lpthread"
+          
+          # Build only mkfs.erofs
+          make -j$(nproc) -C mkfs
+          
+          echo "=== Verifying static build ==="
+          file mkfs/mkfs.erofs
+          ldd mkfs/mkfs.erofs 2>&1 | grep -q "not a dynamic executable" && echo "✓ Static binary confirmed" || echo "⚠ Dynamic binary"
+          
+          echo "=== Testing mkfs.erofs ==="
+          ./mkfs/mkfs.erofs --version
+          
+          echo "=== Stripping binary ==="
+          strip mkfs/mkfs.erofs
+          
+          echo "=== Preparing output ==="
+          mkdir -p /workspace/output
+          cp mkfs/mkfs.erofs /workspace/output/
+          
+          # Create info file
+          echo "mkfs.erofs AArch64 Static Binary" > /workspace/output/README.txt
+          echo "Built on: $(date)" >> /workspace/output/README.txt
+          echo "Architecture: $(uname -m)" >> /workspace/output/README.txt
+          echo "File info: $(file mkfs/mkfs.erofs)" >> /workspace/output/README.txt
+          echo "Size: $(ls -lh mkfs/mkfs.erofs | awk "{print \$5}")" >> /workspace/output/README.txt
+          
+          ls -la /workspace/output/
+        '
         
-    - name: Build static libuuid
-      run: |
-        cd /tmp
-        wget https://github.com/util-linux/util-linux/archive/v2.39.2.tar.gz
-        tar xzf v2.39.2.tar.gz
-        cd util-linux-2.39.2
-        ./autogen.sh
-        ./configure \
-          --prefix=$PREFIX \
-          --enable-static \
-          --disable-shared \
-          --enable-libuuid \
-          --disable-all-programs \
-          --without-python \
-          --without-ncurses
-        make -j$(nproc)
-        make install
-        
-    - name: Build erofs-utils
-      run: |
-        ./autogen.sh
-        ./configure \
-          --prefix=$PREFIX \
-          --enable-static \
-          --disable-shared \
-          --enable-lz4 \
-          --enable-liblzma \
-          --with-uuid \
-          PKG_CONFIG_PATH=$PREFIX/lib/pkgconfig \
-          CFLAGS="$CFLAGS -I$PREFIX/include" \
-          LDFLAGS="$LDFLAGS -L$PREFIX/lib" \
-          LIBS="-luuid -llz4 -llzma -lz -lpthread"
-        make -j$(nproc)
-        
-    - name: Verify and prepare binaries
-      run: |
-        echo "=== Verifying static build ==="
-        file mkfs/mkfs.erofs
-        ldd mkfs/mkfs.erofs || echo "Static binary confirmed"
-        
-        echo "=== Testing binaries ==="
-        ./mkfs/mkfs.erofs --version
-        ./dump/dump.erofs --version
-        ./fsck/fsck.erofs --version
-        
-        echo "=== Stripping binaries ==="
-        strip mkfs/mkfs.erofs dump/dump.erofs fsck/fsck.erofs
-        
-        echo "=== Creating output directory ==="
-        mkdir -p output
-        cp mkfs/mkfs.erofs output/
-        cp dump/dump.erofs output/
-        cp fsck/fsck.erofs output/
-        
-        # Create info file
-        echo "EROFS-Utils AArch64 Static Binaries" > output/README.txt
-        echo "Built on: $(date)" >> output/README.txt
-        echo "Target: $(uname -m)" >> output/README.txt
-        echo "Compiler: $(gcc --version | head -n1)" >> output/README.txt
-        
-        ls -la output/
-        
-    - name: Upload binaries as artifacts
+    - name: Upload mkfs.erofs binary
       uses: actions/upload-artifact@v4
       with:
-        name: erofs-utils-aarch64-static-native
+        name: mkfs.erofs-aarch64-static
         path: output/
         retention-days: 30
         
@@ -161,7 +140,20 @@ jobs:
       uses: softprops/action-gh-release@v1
       with:
         files: output/*
-        draft: false
-        prerelease: false
+        name: "mkfs.erofs AArch64 Static ${{ github.ref_name }}"
+        body: |
+          ## mkfs.erofs AArch64 Static Binary
+          
+          - **Architecture:** aarch64 (ARM64)
+          - **Type:** Static binary (no dependencies)
+          - **Compatible with:** Linux ARM64, Android (Termux), etc.
+          - **Built from:** erofs-utils repository
+          
+          ### Usage
+          ```bash
+          chmod +x mkfs.erofs
+          ./mkfs.erofs --help
+          ./mkfs.erofs -zlz4hc output.erofs input_directory/
+          ```
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
