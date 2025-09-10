@@ -42,7 +42,7 @@ jobs:
       - name: Build Kernel-With-KernelSU
         run: |
           export KBUILD_BUILD_USER="andrey" KBUILD_BUILD_HOST="linux"
-          export PATH=$(pwd)/zyc-clang/bin/:$PATH
+          export PATH=$(pwd)/clang/bin/:$PATH
           make $KERNEL_CMDLINE $KERNEL_DEFCONFIG && make $KERNEL_CMDLINE -j$(nproc --all) && cp out/arch/arm64/boot/Image.gz-dtb AnyKernel3
       - name: Upload Kernel
         uses: actions/upload-artifact@v4
