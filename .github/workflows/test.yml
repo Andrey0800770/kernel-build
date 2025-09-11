@@ -1,12 +1,4 @@
 name: Build mkfs.erofs Static AArch64
-on:
-  push:
-    branches: [ main, master ]
-    tags: [ 'v*' ]
-  pull_request:
-    branches: [ main, master ]
-  workflow_dispatch:
-
 jobs:
   build-mkfs-aarch64:
     runs-on: ubuntu-latest
