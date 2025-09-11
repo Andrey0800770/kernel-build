@@ -16,7 +16,7 @@ jobs:
     env:
       KERNEL_DEFCONFIG: "${{ matrix.config }}"
       KERNEL_CMDLINE: "ARCH=arm64 CC=clang LLVM=1 O=out"
-      EXTRAVERSION: "-Rel8"
+      EXTRAVERSION: "-Rel8.1"
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -51,6 +51,7 @@ jobs:
           git clone https://github.com/Andrey0800770/kernel-build/ -b anykernel AnyKernel3 && rm -rf AnyKernel3/.git*
       - name: Build Kernel-With-KernelSU
         run: |
+          export KBUILD_BUILD_USER="andrey" KBUILD_BUILD_HOST="linux"
           export PATH=$(pwd)/clang/bin/:$PATH
           make $KERNEL_CMDLINE $KERNEL_DEFCONFIG CC="clang" && make $KERNEL_CMDLINE CC="clang" -j$(nproc --all) && cp out/arch/arm64/boot/Image.gz-dtb AnyKernel3
       - name: Upload Kernel
