@@ -12,14 +12,14 @@ jobs:
       CCACHE_HARDLINK: "true"
       KERNEL_DEFCONFIG: "star2qlte_chn_open_defconfig"
       KERNEL_CMDLINE: "ARCH=arm64 O=out LLVM=1"
-      EXTRAVERSION: "-dev"
+      EXTRAVERSION: "-Rel10"
     
     steps:
       - name: Checkout
         uses: actions/checkout@v4
         with:
           repository: Andrey0800770/samsung_sdm845-kernel
-          ref: test
+          ref: ksu+susfs
           submodules: "false"
           fetch-depth: 100
 
