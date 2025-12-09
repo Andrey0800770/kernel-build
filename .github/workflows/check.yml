@@ -11,15 +11,15 @@ jobs:
       CCACHE_MAXSIZE: "4G"
       CCACHE_HARDLINK: "true"
       KERNEL_DEFCONFIG: "star2qlte_chn_open_defconfig"
-      KERNEL_CMDLINE: "ARCH=arm64 O=out LLVM=1"
-      EXTRAVERSION: "-Rel10"
+      KERNEL_CMDLINE: "ARCH=arm64 CC=clang LLVM=1 O=out"
+      EXTRAVERSION: "-RelDEV"
     
     steps:
       - name: Checkout
         uses: actions/checkout@v4
         with:
           repository: Andrey0800770/samsung_sdm845-kernel
-          ref: ksu+susfs
+          ref: dev
           submodules: "false"
           fetch-depth: 100
 
@@ -41,19 +41,12 @@ jobs:
           aria2c -j$(nproc --all) https://github.com/ZyCromerZ/Clang/releases/download/22.0.0git-20250924-release/Clang-22.0.0git-20250924.tar.gz
           mkdir zyc-clang
           tar -xzvf Clang-*.tar.gz -C zyc-clang >> /dev/null
-          git clone https://github.com/osm0sis/AnyKernel3
-          sed -i 's/do.devicecheck=1/do.devicecheck=0/g' AnyKernel3/anykernel.sh
-          sed -i 's!BLOCK=/dev/block/platform/omap/omap_hsmmc.0/by-name/boot;!BLOCK=auto;!g' AnyKernel3/anykernel.sh
-          sed -i 's/IS_SLOT_DEVICE=0;/is_slot_device=auto;/g' AnyKernel3/anykernel.sh
-          rm -rf AnyKernel3/.git* AnyKernel3/README.md
+          git clone https://github.com/Andrey0800770/kernel-build/ -b anykernel AnyKernel3 && rm -rf AnyKernel3/.git*
       - name: Build Kernel-With-KernelSU
         run: |
+          export KBUILD_BUILD_USER="andrey" KBUILD_BUILD_HOST="linux"
           export PATH=$(pwd)/zyc-clang/bin/:$PATH
-          export KBUILD_BUILD_USER="andrey"
-          export KBUILD_BUILD_HOST="linux"
-          make $KERNEL_CMDLINE $KERNEL_DEFCONFIG CC="ccache clang"
-          make $KERNEL_CMDLINE CC="ccache clang" -j$(nproc --all)
-          cp out/arch/arm64/boot/Image.gz-dtb AnyKernel3
+          make $KERNEL_CMDLINE -j$(nproc --all) $KERNEL_DEFCONFIG && make $KERNEL_CMDLINE -j$(nproc --all) && cp out/arch/arm64/boot/Image.gz-dtb AnyKernel3
       - name: Upload Kernel
         uses: actions/upload-artifact@v4
         with:
