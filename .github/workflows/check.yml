@@ -1,18 +1,19 @@
 name: Build Test
 on:
   workflow_dispatch:
-
 jobs:
   build:
     runs-on: ubuntu-latest
     env:
-      CCACHE_COMPILERCHECK: "%compiler% -dumpmachine; %compiler% -dumpversion"
+      CCACHE_COMPILERCHECK: "content"
       CCACHE_NOHASHDIR: "true"
-      CCACHE_SLOPPINESS: "time_macros,include_file_mtime"
-      CCACHE_MAXSIZE: "4G"
+      CCACHE_SLOPPINESS: "time_macros,include_file_mtime,file_macro,pch_defines,system_headers"
+      CCACHE_MAXSIZE: "10G"
       CCACHE_HARDLINK: "true"
+      CCACHE_COMPRESS: "true"
+      CCACHE_COMPRESSLEVEL: "1"
+      CCACHE_DIRECT: "true"
       KERNEL_DEFCONFIG: "star2qlte_chn_open_defconfig"
-      KERNEL_CMDLINE: "ARCH=arm64 CC=ccache clang LLVM=1 O=out"
       EXTRAVERSION: "-RelDEV"
     
     steps:
@@ -22,34 +23,40 @@ jobs:
           repository: Andrey0800770/samsung_sdm845-kernel
           ref: dev
           submodules: "false"
-          fetch-depth: 100
-
+          fetch-depth: 1
+          
       - name: Set up ccache
         uses: hendrikmuhs/ccache-action@v1.2
-
+        with:
+          key: kernel-build-${{ github.sha }}
+          restore-keys: |
+            kernel-build-
+          max-size: 10G
+          
       - name: Install dependencies
         run: |
           sed -i 's/EXTRAVERSION =.*/EXTRAVERSION = ${{ env.EXTRAVERSION }}/' Makefile
-          sudo tee /etc/apt/sources.list > /dev/null <<EOF
-          deb http://archive.ubuntu.com/ubuntu/ noble main restricted universe multiverse
-          deb http://archive.ubuntu.com/ubuntu/ noble-updates main restricted universe multiverse
-          deb http://archive.ubuntu.com/ubuntu/ noble-backports main restricted universe multiverse
-          deb http://security.ubuntu.com/ubuntu/ noble-security main restricted universe multiverse
-          EOF
           sudo apt-get update -y 
-          sudo apt install aria2 binutils make python3 libssl-dev build-essential bc bison flex unzip libssl-dev ca-certificates xz-utils mkbootimg cpio device-tree-compiler git git-lfs -y
-          #aria2c -j$(nproc --all) $(curl -fsSL https://raw.githubusercontent.com/ZyCromerZ/Clang/refs/heads/main/Clang-main-link.txt)
-          aria2c -j$(nproc --all) https://github.com/ZyCromerZ/Clang/releases/download/22.0.0git-20250924-release/Clang-22.0.0git-20250924.tar.gz
+          sudo apt-get install -y --no-install-recommends aria2 binutils make python3 libssl-dev build-essential bc bison flex unzip ca-certificates xz-utils mkbootimg cpio device-tree-compiler git
+          aria2c -x16 -s16 -k1M https://github.com/ZyCromerZ/Clang/releases/download/22.0.0git-20250924-release/Clang-22.0.0git-20250924.tar.gz
           mkdir zyc-clang
-          tar -xzvf Clang-*.tar.gz -C zyc-clang >> /dev/null
-          git clone https://github.com/Andrey0800770/kernel-build/ -b anykernel AnyKernel3 && rm -rf AnyKernel3/.git*
-      - name: Build Kernel-With-KernelSU
+          tar -I pigz -xf Clang-*.tar.gz -C zyc-clang 2>/dev/null || tar -xzf Clang-*.tar.gz -C zyc-clang
+          git clone --depth=1 https://github.com/Andrey0800770/kernel-build/ -b anykernel AnyKernel3 && rm -rf AnyKernel3/.git*
+          
+      - name: Build Kernel
         run: |
           export KBUILD_BUILD_USER="andrey" KBUILD_BUILD_HOST="linux"
           export PATH=$(pwd)/zyc-clang/bin/:$PATH
-          make $KERNEL_CMDLINE -j$(nproc --all) $KERNEL_DEFCONFIG && make $KERNEL_CMDLINE -j$(nproc --all) && cp out/arch/arm64/boot/Image.gz-dtb AnyKernel3
+          export CCACHE_DIR=$HOME/.ccache
+          ccache -z
+          make ARCH=arm64 CC="ccache clang" LLVM=1 O=out -j$(nproc --all) $KERNEL_DEFCONFIG
+          make ARCH=arm64 CC="ccache clang" LLVM=1 O=out -j$(nproc --all)
+          ccache -s
+          cp out/arch/arm64/boot/Image.gz-dtb AnyKernel3
+          
       - name: Upload Kernel
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ env.KERNEL_DEFCONFIG }}
+          name: kernel-${{ env.KERNEL_DEFCONFIG }}-${{ github.run_number }}
           path: "AnyKernel3/*"
+          compression-level: 6
