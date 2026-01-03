@@ -8,10 +8,11 @@ jobs:
     env:
       CCACHE_COMPILERCHECK: "%compiler% -dumpmachine; %compiler% -dumpversion"
       CCACHE_NOHASHDIR: "true"
+      CCACHE_SLOPPINESS: "time_macros,include_file_mtime"
       CCACHE_MAXSIZE: "4G"
       CCACHE_HARDLINK: "true"
       KERNEL_DEFCONFIG: "star2qlte_chn_open_defconfig"
-      KERNEL_CMDLINE: "ARCH=arm64 CC=clang LLVM=1 O=out"
+      KERNEL_CMDLINE: "ARCH=arm64 CC=ccache clang LLVM=1 O=out"
       EXTRAVERSION: "-RelDEV"
     
     steps:
