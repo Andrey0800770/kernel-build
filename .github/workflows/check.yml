@@ -1,20 +1,20 @@
 name: Build Test
 on:
   workflow_dispatch:
+
 jobs:
   build:
     runs-on: ubuntu-latest
     env:
-      CCACHE_COMPILERCHECK: "content"
-      CCACHE_NOHASHDIR: "true"
-      CCACHE_SLOPPINESS: "time_macros,include_file_mtime,file_macro,pch_defines,system_headers"
-      CCACHE_MAXSIZE: "10G"
-      CCACHE_HARDLINK: "true"
-      CCACHE_COMPRESS: "true"
+      CCACHE_COMPILERCHECK: "%compiler% -dumpmachine; %compiler% -dumpversion"
       CCACHE_COMPRESSLEVEL: "1"
-      CCACHE_DIRECT: "true"
+      CCACHE_SLOPPINESS: "time_macros,include_file_mtime,file_macro,pch_defines,system_headers"
+      CCACHE_NOHASHDIR: "true"
+      CCACHE_MAXSIZE: "4G"
+      CCACHE_HARDLINK: "true"
       KERNEL_DEFCONFIG: "star2qlte_chn_open_defconfig"
-      EXTRAVERSION: "-RelDEV"
+      KERNEL_CMDLINE: "ARCH=arm64 O=out LLVM=1"
+      EXTRAVERSION: "-RelDev"
     
     steps:
       - name: Checkout
@@ -24,15 +24,10 @@ jobs:
           ref: dev
           submodules: "false"
           fetch-depth: 1
-          
+
       - name: Set up ccache
         uses: hendrikmuhs/ccache-action@v1.2
-        with:
-          key: kernel-build-${{ github.sha }}
-          restore-keys: |
-            kernel-build-
-          max-size: 10G
-          
+
       - name: Install dependencies
         run: |
           sed -i 's/EXTRAVERSION =.*/EXTRAVERSION = ${{ env.EXTRAVERSION }}/' Makefile
@@ -42,21 +37,15 @@ jobs:
           mkdir zyc-clang
           tar -I pigz -xf Clang-*.tar.gz -C zyc-clang 2>/dev/null || tar -xzf Clang-*.tar.gz -C zyc-clang
           git clone --depth=1 https://github.com/Andrey0800770/kernel-build/ -b anykernel AnyKernel3 && rm -rf AnyKernel3/.git*
-          
       - name: Build Kernel
         run: |
-          export KBUILD_BUILD_USER="andrey" KBUILD_BUILD_HOST="linux"
           export PATH=$(pwd)/zyc-clang/bin/:$PATH
-          export CCACHE_DIR=$HOME/.ccache
-          ccache -z
-          make ARCH=arm64 CC="ccache clang" LLVM=1 O=out -j$(nproc --all) $KERNEL_DEFCONFIG
-          make ARCH=arm64 CC="ccache clang" LLVM=1 O=out -j$(nproc --all)
-          ccache -s
+          export KBUILD_BUILD_USER="andrey" KBUILD_BUILD_HOST="linux"
+          make $KERNEL_CMDLINE $KERNEL_DEFCONFIG CC="ccache clang"
+          make $KERNEL_CMDLINE CC="ccache clang" -j$(nproc --all)
           cp out/arch/arm64/boot/Image.gz-dtb AnyKernel3
-          
       - name: Upload Kernel
         uses: actions/upload-artifact@v4
         with:
-          name: kernel-${{ env.KERNEL_DEFCONFIG }}-${{ github.run_number }}
+          name: ${{ env.KERNEL_DEFCONFIG }}-${{ github.run_number }}
           path: "AnyKernel3/*"
-          compression-level: 6
