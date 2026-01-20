@@ -33,7 +33,7 @@ jobs:
           sed -i 's/EXTRAVERSION =.*/EXTRAVERSION = ${{ env.EXTRAVERSION }}/' Makefile
           sudo apt-get update -y 
           sudo apt-get install -y --no-install-recommends aria2 binutils make python3 libssl-dev build-essential bc bison flex unzip ca-certificates xz-utils mkbootimg cpio device-tree-compiler git
-          aria2c -x16 -s16 -k1M https://github.com/ZyCromerZ/Clang/releases/download/22.0.0git-20250924-release/Clang-22.0.0git-20250924.tar.gz
+          aria2c -x16 -s16 -k1M https://github.com/ZyCromerZ/Clang/releases/download/23.0.0git-20260119-release/Clang-23.0.0git-20260119.tar.gz
           mkdir zyc-clang
           tar -I pigz -xf Clang-*.tar.gz -C zyc-clang 2>/dev/null || tar -xzf Clang-*.tar.gz -C zyc-clang
           git clone --depth=1 https://github.com/Andrey0800770/kernel-build/ -b anykernel AnyKernel3 && rm -rf AnyKernel3/.git*
