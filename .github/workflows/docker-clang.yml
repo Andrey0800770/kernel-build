@@ -1,0 +1,46 @@
+name: Build on Docker Kernel Linux
+on:
+  workflow_dispatch:
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container:
+      image: tuxmake/clang-nightly
+    env:
+      CCACHE_COMPILERCHECK: "%compiler% -dumpmachine; %compiler% -dumpversion"
+      CCACHE_COMPRESSLEVEL: "1"
+      CCACHE_SLOPPINESS: "time_macros,include_file_mtime,file_macro,pch_defines,system_headers"
+      CCACHE_NOHASHDIR: "true"
+      CCACHE_MAXSIZE: "4G"
+      CCACHE_HARDLINK: "true"
+      KERNEL_DEFCONFIG: "star2qlte_chn_open_defconfig"
+      KERNEL_CMDLINE: "ARCH=arm64 O=out LLVM=1"
+      EXTRAVERSION: "-RelDev"
+    
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          repository: Andrey0800770/samsung_sdm845-kernel
+          ref: dev
+          submodules: "false"
+          fetch-depth: 1
+      - name: Set up ccache
+        uses: hendrikmuhs/ccache-action@v1.2
+      - name: Install dependencies
+        run: |
+          sed -i 's/EXTRAVERSION =.*/EXTRAVERSION = ${{ env.EXTRAVERSION }}/' Makefile
+          apt-get update -y 
+          apt-get install -y --no-install-recommends aria2 binutils make python3 libssl-dev build-essential bc bison flex unzip ca-certificates xz-utils mkbootimg cpio device-tree-compiler git pigz
+          git clone --depth=1 https://github.com/Andrey0800770/kernel-build/ -b anykernel AnyKernel3 && rm -rf AnyKernel3/.git*
+      - name: Build Kernel
+        run: |
+          export KBUILD_BUILD_USER="andrey" KBUILD_BUILD_HOST="linux"
+          make $KERNEL_CMDLINE $KERNEL_DEFCONFIG CC="ccache clang"
+          make $KERNEL_CMDLINE CC="ccache clang" -j$(nproc --all)
+          cp out/arch/arm64/boot/Image.gz-dtb AnyKernel3
+      - name: Upload Kernel
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ env.KERNEL_DEFCONFIG }}-${{ github.run_number }}
+          path: "AnyKernel3/*"
