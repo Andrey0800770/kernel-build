@@ -1,9 +1,11 @@
-name: Docker Build Kernel
+name: Build Linux on Docker
 on:
   workflow_dispatch:
 jobs:
   build:
     runs-on: ubuntu-latest
+    container:
+      image: tuxmake/clang-nightly
     env:
       CCACHE_COMPILERCHECK: "%compiler% -dumpmachine; %compiler% -dumpversion"
       CCACHE_COMPRESSLEVEL: "1"
@@ -25,40 +27,14 @@ jobs:
           fetch-depth: 1
       - name: Set up ccache
         uses: hendrikmuhs/ccache-action@v1.2
-      - name: Setup Docker container
-        run: |
-          docker pull tuxmake/clang-nightly
       - name: Install dependencies
         run: |
           sed -i 's/EXTRAVERSION =.*/EXTRAVERSION = ${{ env.EXTRAVERSION }}/' Makefile
-          sudo apt-get update -y 
-          sudo apt-get install -y --no-install-recommends git
+          apt-get update -y 
+          apt-get install -y --no-install-recommends aria2 binutils make python3 libssl-dev build-essential bc bison flex unzip ca-certificates xz-utils mkbootimg cpio device-tree-compiler git pigz
           git clone --depth=1 https://github.com/Andrey0800770/kernel-build/ -b anykernel AnyKernel3 && rm -rf AnyKernel3/.git*
       - name: Build Kernel
         run: |
-          docker run --rm \
-            -v ${{ github.workspace }}:/workspace \
-            -v ~/.ccache:/root/.ccache \
-            -e CCACHE_COMPILERCHECK="${{ env.CCACHE_COMPILERCHECK }}" \
-            -e CCACHE_COMPRESSLEVEL="${{ env.CCACHE_COMPRESSLEVEL }}" \
-            -e CCACHE_SLOPPINESS="${{ env.CCACHE_SLOPPINESS }}" \
-            -e CCACHE_NOHASHDIR="${{ env.CCACHE_NOHASHDIR }}" \
-            -e CCACHE_MAXSIZE="${{ env.CCACHE_MAXSIZE }}" \
-            -e CCACHE_HARDLINK="${{ env.CCACHE_HARDLINK }}" \
-            -e KBUILD_BUILD_USER="andrey" \
-            -e KBUILD_BUILD_HOST="linux" \
-            -w /workspace \
-            tuxmake/clang-nightly \
-            bash -c "
-              make ${{ env.KERNEL_CMDLINE }} ${{ env.KERNEL_DEFCONFIG }} CC='ccache clang' && \
-              make ${{ env.KERNEL_CMDLINE }} CC='ccache clang' -j\$(nproc --all) && \
-              cp out/arch/arm64/boot/Image.gz-dtb AnyKernel3
-            "
-      - name: Upload Kernel
-        uses: actions/upload-artifact@v4
-        with:
-          name: ${{ env.KERNEL_DEFCONFIG }}-${{ github.run_number }}
-          path: "AnyKernel3/*"        run: |
           export KBUILD_BUILD_USER="andrey" KBUILD_BUILD_HOST="linux"
           make $KERNEL_CMDLINE $KERNEL_DEFCONFIG CC="ccache clang"
           make $KERNEL_CMDLINE CC="ccache clang" -j$(nproc --all)
