@@ -1,11 +1,9 @@
-name: Build Linux on Docker
+name: Build Test
 on:
   workflow_dispatch:
 jobs:
   build:
-    runs-on: ubuntu-latest
-    container:
-      image: tuxmake/clang-nightly
+    runs-on: ubuntu-20.04
     env:
       CCACHE_COMPILERCHECK: "%compiler% -dumpmachine; %compiler% -dumpversion"
       CCACHE_COMPRESSLEVEL: "1"
@@ -27,14 +25,44 @@ jobs:
           fetch-depth: 1
       - name: Set up ccache
         uses: hendrikmuhs/ccache-action@v1.2
-      - name: Install dependencies
+      - name: Install dependencies and extract Clang from Docker
         run: |
           sed -i 's/EXTRAVERSION =.*/EXTRAVERSION = ${{ env.EXTRAVERSION }}/' Makefile
-          apt-get update -y 
-          apt-get install -y --no-install-recommends aria2 binutils make python3 libssl-dev build-essential bc bison flex unzip ca-certificates xz-utils mkbootimg cpio device-tree-compiler git pigz
+          sudo apt-get update -y 
+          sudo apt-get install -y --no-install-recommends binutils make python3 libssl-dev build-essential bc bison flex unzip ca-certificates xz-utils cpio device-tree-compiler git pigz
+          
+          # Extrair o Clang do container Docker
+          docker pull tuxmake/clang-nightly
+          docker create --name clang-temp tuxmake/clang-nightly
+          docker cp clang-temp:/usr/lib/llvm-20 ./clang-nightly
+          docker rm clang-temp
+          
           git clone --depth=1 https://github.com/Andrey0800770/kernel-build/ -b anykernel AnyKernel3 && rm -rf AnyKernel3/.git*
+      
+      - name: Patch Makefiles for Make 4.3+ compatibility
+        run: |
+          # Encontrar e corrigir todas as linhas problemáticas nos Makefiles
+          # Remove tabs antes de $(eval, $(call multi_depend, e outras funções make
+          find scripts/ -name "Makefile*" -type f -exec sed -i 's/^\t\$(eval/$(eval/g' {} \;
+          find scripts/ -name "*.mk" -type f -exec sed -i 's/^\t\$(eval/$(eval/g' {} \;
+          
+          # Patch específico para techpack se existir
+          if [ -d "techpack" ]; then
+            find techpack/ -name "Makefile*" -type f -exec sed -i 's/^\t\$(eval/$(eval/g' {} \;
+            find techpack/ -name "*.mk" -type f -exec sed -i 's/^\t\$(eval/$(eval/g' {} \;
+          fi
+          
+          # Verificar se há problemas na linha 410 do Makefile.lib
+          if grep -n "^\t.*\$(eval\|^\t.*\$(call.*multi_depend" scripts/Makefile.lib; then
+            echo "Found problematic lines in Makefile.lib, patching..."
+            sed -i 's/^\t\(.*\$(eval\)/\1/g' scripts/Makefile.lib
+            sed -i 's/^\t\(.*\$(call.*multi_depend\)/\1/g' scripts/Makefile.lib
+          fi
+          
       - name: Build Kernel
         run: |
+          export PATH=$(pwd)/clang-nightly/bin:$PATH
+          export LD_LIBRARY_PATH=$(pwd)/clang-nightly/lib:$LD_LIBRARY_PATH
           export KBUILD_BUILD_USER="andrey" KBUILD_BUILD_HOST="linux"
           make $KERNEL_CMDLINE $KERNEL_DEFCONFIG CC="ccache clang"
           make $KERNEL_CMDLINE CC="ccache clang" -j$(nproc --all)
