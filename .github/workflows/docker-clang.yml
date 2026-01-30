@@ -1,4 +1,4 @@
-name: Build Test
+name: Docker Kernel Build Test
 on:
   workflow_dispatch:
 jobs:
@@ -25,18 +25,14 @@ jobs:
           fetch-depth: 1
       - name: Set up ccache
         uses: hendrikmuhs/ccache-action@v1.2
-      - name: Install dependencies and extract Clang from Docker
+      - name: Setup Docker container
+        run: |
+          docker pull tuxmake/clang-nightly
+      - name: Install dependencies
         run: |
           sed -i 's/EXTRAVERSION =.*/EXTRAVERSION = ${{ env.EXTRAVERSION }}/' Makefile
           sudo apt-get update -y 
-          sudo apt-get install -y --no-install-recommends binutils make python3 libssl-dev build-essential bc bison flex unzip ca-certificates xz-utils cpio device-tree-compiler git pigz
-          
-          # Extrair o Clang do container Docker
-          docker pull tuxmake/clang-nightly
-          docker create --name clang-temp tuxmake/clang-nightly
-          docker cp clang-temp:/usr/lib/llvm-20 ./clang-nightly
-          docker rm clang-temp
-          
+          sudo apt-get install -y --no-install-recommends git
           git clone --depth=1 https://github.com/Andrey0800770/kernel-build/ -b anykernel AnyKernel3 && rm -rf AnyKernel3/.git*
       
       - name: Patch Makefiles for Make 4.3+ compatibility
@@ -53,20 +49,34 @@ jobs:
           fi
           
           # Verificar se há problemas na linha 410 do Makefile.lib
-          if grep -n "^\t.*\$(eval\|^\t.*\$(call.*multi_depend" scripts/Makefile.lib; then
+          if grep -n "^\t.*\$(eval\|^\t.*\$(call.*multi_depend" scripts/Makefile.lib 2>/dev/null; then
             echo "Found problematic lines in Makefile.lib, patching..."
             sed -i 's/^\t\(.*\$(eval\)/\1/g' scripts/Makefile.lib
             sed -i 's/^\t\(.*\$(call.*multi_depend\)/\1/g' scripts/Makefile.lib
           fi
           
+          echo "Makefiles patched successfully"
+          
       - name: Build Kernel
         run: |
-          export PATH=$(pwd)/clang-nightly/bin:$PATH
-          export LD_LIBRARY_PATH=$(pwd)/clang-nightly/lib:$LD_LIBRARY_PATH
-          export KBUILD_BUILD_USER="andrey" KBUILD_BUILD_HOST="linux"
-          make $KERNEL_CMDLINE $KERNEL_DEFCONFIG CC="ccache clang"
-          make $KERNEL_CMDLINE CC="ccache clang" -j$(nproc --all)
-          cp out/arch/arm64/boot/Image.gz-dtb AnyKernel3
+          docker run --rm \
+            -v ${{ github.workspace }}:/workspace \
+            -v ~/.ccache:/root/.ccache \
+            -e CCACHE_COMPILERCHECK="${{ env.CCACHE_COMPILERCHECK }}" \
+            -e CCACHE_COMPRESSLEVEL="${{ env.CCACHE_COMPRESSLEVEL }}" \
+            -e CCACHE_SLOPPINESS="${{ env.CCACHE_SLOPPINESS }}" \
+            -e CCACHE_NOHASHDIR="${{ env.CCACHE_NOHASHDIR }}" \
+            -e CCACHE_MAXSIZE="${{ env.CCACHE_MAXSIZE }}" \
+            -e CCACHE_HARDLINK="${{ env.CCACHE_HARDLINK }}" \
+            -e KBUILD_BUILD_USER="andrey" \
+            -e KBUILD_BUILD_HOST="linux" \
+            -w /workspace \
+            tuxmake/clang-nightly \
+            bash -c "
+              make ${{ env.KERNEL_CMDLINE }} ${{ env.KERNEL_DEFCONFIG }} CC='ccache clang' && \
+              make ${{ env.KERNEL_CMDLINE }} CC='ccache clang' -j\$(nproc --all) && \
+              cp out/arch/arm64/boot/Image.gz-dtb AnyKernel3
+            "
       - name: Upload Kernel
         uses: actions/upload-artifact@v4
         with:
