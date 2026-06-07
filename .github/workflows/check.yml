@@ -17,8 +17,16 @@ jobs:
       EXTRAVERSION: "-RelDEV"
     
     steps:
+      - name: Cleanup
+        uses: rokibhasansagar/slimhub_actions@main
+
+      - name: Set Swap Space
+        uses: pierotofy/set-swap-space@master
+        with:
+          swap-size-gb: 24
+
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           repository: Andrey0800770/samsung_sdm845-kernel
           ref: dev
@@ -45,7 +53,7 @@ jobs:
           make $KERNEL_CMDLINE CC="ccache clang" -j$(nproc --all)
           cp out/arch/arm64/boot/Image.gz-dtb AnyKernel3
       - name: Upload Kernel
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: ${{ env.KERNEL_DEFCONFIG }}-${{ github.run_number }}
           path: "AnyKernel3/*"
