@@ -13,7 +13,7 @@ jobs:
       CCACHE_MAXSIZE: "4G"
       CCACHE_HARDLINK: "true"
       KERNEL_DEFCONFIG: "star2qlte_chn_open_defconfig"
-      KERNEL_CMDLINE: "ARCH=arm64 O=out LLVM=1 LLVM_IAS=1 V=1 LD_LIBRARY_PATH=/usr/lib/llvm-22/lib/"
+      KERNEL_CMDLINE: "ARCH=arm64 O=out LLVM=1 LLVM_IAS=1 V=1 LD=ld.lld LD_LIBRARY_PATH=/usr/lib/llvm-22/lib/"
       EXTRAVERSION: "-RelDEV"
       
     steps:
