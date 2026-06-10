@@ -17,8 +17,8 @@ jobs:
       EXTRAVERSION: "-RelDEV"
     
     steps:
-      - name: Cleanup
-        uses: rokibhasansagar/slimhub_actions@main
+#      - name: Cleanup
+#        uses: rokibhasansagar/slimhub_actions@main
 
       - name: Set Swap Space
         uses: pierotofy/set-swap-space@master
@@ -48,6 +48,8 @@ jobs:
       - name: Build Kernel
         run: |
           export PATH=$(pwd)/zyc-clang/bin/:$PATH
+          clang --target=aarch64-linux-gnu -mcpu=help
+          clang --target=aarch64-linux-gnu -march=help 
           export KBUILD_BUILD_USER="andrey" KBUILD_BUILD_HOST="linux"
           make $KERNEL_CMDLINE $KERNEL_DEFCONFIG CC="ccache clang"
           make $KERNEL_CMDLINE CC="ccache clang" -j$(nproc --all)
