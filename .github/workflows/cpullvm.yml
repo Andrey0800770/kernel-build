@@ -34,7 +34,10 @@ jobs:
           sudo apt-get install -y --no-install-recommends pixz aria2 binutils make python3 libssl-dev build-essential bc bison flex unzip ca-certificates xz-utils mkbootimg cpio device-tree-compiler git
           aria2c -x16 -s16 -k1M https://github.com/qualcomm/cpullvm-toolchain/releases/download/cpullvm-22.1.1/cpullvm-22.1.1-Linux-x86_64.tar.xz
           mkdir clang
-          tar -I pixz -xf cpullvm-*.tar.xz -C clang 2>/dev/null || tar -xf cpullvm-*.tar.xz -C clang
+          tar -I pixz -xf cpullvm-*.tar.xz -C clang || tar -xf cpullvm-*.tar.xz -C clang
+          ls clang
+          ls clang/cpullvm*
+          ls clang/cpullvm*/bin
           git clone --depth=1 https://github.com/Andrey0800770/kernel-build/ -b anykernel AnyKernel3 && rm -rf AnyKernel3/.git*
       - name: Build Kernel
         run: |
