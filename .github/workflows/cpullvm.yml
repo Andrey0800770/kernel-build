@@ -35,13 +35,11 @@ jobs:
           aria2c -x16 -s16 -k1M https://github.com/qualcomm/cpullvm-toolchain/releases/download/cpullvm-22.1.1/cpullvm-22.1.1-Linux-x86_64.tar.xz
           mkdir clang
           tar -I pixz -xf cpullvm-*.tar.xz -C clang || tar -xf cpullvm-*.tar.xz -C clang
-          ls clang
-          ls clang/cpullvm*
-          ls clang/cpullvm*/bin
+          mv clang/cpullvm* clang/clang
           git clone --depth=1 https://github.com/Andrey0800770/kernel-build/ -b anykernel AnyKernel3 && rm -rf AnyKernel3/.git*
       - name: Build Kernel
         run: |
-          export PATH=$(pwd)/clang/cpullvm*/bin/:$PATH
+          export PATH=$(pwd)/clang/clang/bin/:$PATH
           export KBUILD_BUILD_USER="andrey" KBUILD_BUILD_HOST="linux"
           make $KERNEL_CMDLINE $KERNEL_DEFCONFIG CC="clang"
           make $KERNEL_CMDLINE CC="clang" -j$(nproc --all)
