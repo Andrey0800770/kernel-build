@@ -1,0 +1,50 @@
+name: Build clean
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      KERNEL_DEFCONFIG: "star2qlte_chn_open_defconfig"
+      KERNEL_CMDLINE: "ARCH=arm64 O=out LLVM=1"
+      EXTRAVERSION: "-RelDEV"
+    
+    steps:
+#      - name: Cleanup
+#        uses: rokibhasansagar/slimhub_actions@main
+
+      - name: Set Swap Space
+        uses: pierotofy/set-swap-space@master
+        with:
+          swap-size-gb: 24
+
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          repository: Andrey0800770/samsung_sdm845-kernel
+          ref: dev
+          submodules: "false"
+          fetch-depth: 1
+
+      - name: Install dependencies
+        run: |
+          sed -i 's/EXTRAVERSION =.*/EXTRAVERSION = ${{ env.EXTRAVERSION }}/' Makefile
+          sudo apt-get update -y 
+          sudo apt-get install -y --no-install-recommends aria2 binutils make python3 libssl-dev build-essential bc bison flex unzip ca-certificates xz-utils mkbootimg cpio device-tree-compiler git
+          aria2c -x16 -s16 -k1M https://github.com/ZyCromerZ/Clang/releases/download/23.0.0git-20260119-release/Clang-23.0.0git-20260119.tar.gz
+          mkdir zyc-clang
+          tar -I pigz -xf Clang-*.tar.gz -C zyc-clang 2>/dev/null || tar -xzf Clang-*.tar.gz -C zyc-clang
+          git clone --depth=1 https://github.com/Andrey0800770/kernel-build/ -b anykernel AnyKernel3 && rm -rf AnyKernel3/.git*
+      - name: Build Kernel
+        run: |
+          export PATH=$(pwd)/zyc-clang/bin/:$PATH 
+          export KBUILD_BUILD_USER="andrey" KBUILD_BUILD_HOST="linux"
+          make $KERNEL_CMDLINE $KERNEL_DEFCONFIG CC="clang"
+          make $KERNEL_CMDLINE CC="clang" -j$(nproc --all)
+          cp out/arch/arm64/boot/Image.gz-dtb AnyKernel3
+      - name: Upload Kernel
+        uses: actions/upload-artifact@v7
+        with:
+          name: ${{ env.KERNEL_DEFCONFIG }}-${{ github.run_number }}
+          path: "AnyKernel3/*"
