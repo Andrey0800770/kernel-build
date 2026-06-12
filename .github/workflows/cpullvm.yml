@@ -31,7 +31,7 @@ jobs:
         run: |
           sed -i 's/EXTRAVERSION =.*/EXTRAVERSION = ${{ env.EXTRAVERSION }}/' Makefile
           sudo apt-get update -y 
-          sudo apt-get install -y --no-install-recommends pixz aria2 binutils make python3 libssl-dev build-essential bc bison flex unzip ca-certificates xz-utils mkbootimg cpio device-tree-compiler git
+          sudo apt-get install -y --no-install-recommends libc6-dev linux-libc-dev pixz aria2 binutils make python3 libssl-dev build-essential bc bison flex unzip ca-certificates xz-utils mkbootimg cpio device-tree-compiler git
           aria2c -x16 -s16 -k1M https://github.com/qualcomm/cpullvm-toolchain/releases/download/cpullvm-22.1.1/cpullvm-22.1.1-Linux-x86_64.tar.xz
           mkdir clang
           tar -I pixz -xf cpullvm-*.tar.xz -C clang || tar -xf cpullvm-*.tar.xz -C clang
@@ -41,8 +41,8 @@ jobs:
         run: |
           export PATH=$(pwd)/clang/clang/bin/:$PATH
           export KBUILD_BUILD_USER="andrey" KBUILD_BUILD_HOST="linux"
-          make $KERNEL_CMDLINE $KERNEL_DEFCONFIG CC="clang HOSTLDFLAGS="--target=x86_64-linux-gnu""
-          make $KERNEL_CMDLINE CC="clang HOSTLDFLAGS="--target=x86_64-linux-gnu"" -j$(nproc --all)
+          make $KERNEL_CMDLINE $KERNEL_DEFCONFIG CC="clang"
+          make $KERNEL_CMDLINE CC="clang" -j$(nproc --all)
           cp out/arch/arm64/boot/Image.gz-dtb AnyKernel3
       - name: Upload Kernel
         uses: actions/upload-artifact@v7
