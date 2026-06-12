@@ -40,6 +40,9 @@ jobs:
       - name: Build Kernel
         run: |
           export PATH=$(pwd)/clang/clang/bin/:$PATH
+          which clang
+          clang --version
+          echo | clang -E -x c - -v
           export KBUILD_BUILD_USER="andrey" KBUILD_BUILD_HOST="linux"
           make $KERNEL_CMDLINE $KERNEL_DEFCONFIG CC="clang"
           make $KERNEL_CMDLINE CC="clang" -j$(nproc --all)
