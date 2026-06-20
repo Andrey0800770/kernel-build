@@ -40,12 +40,10 @@ jobs:
       - name: Build Kernel
         run: |
           export PATH=$(pwd)/clang/clang/bin/:$PATH
-          which clang
-          clang --version
-          echo | clang -E -x c - -v
           export KBUILD_BUILD_USER="andrey" KBUILD_BUILD_HOST="linux"
-          make $KERNEL_CMDLINE $KERNEL_DEFCONFIG CC="clang" HOSTCC="clang --target=x86_64-linux-gnu" HOSTCXX="clang++ --target=x86_64-linux-gnu"
-          make $KERNEL_CMDLINE CC="clang" HOSTCC="clang --target=x86_64-linux-gnu" HOSTCXX="clang++ --target=x86_64-linux-gnu" -j$(nproc --all)
+          export HOSTCC="clang --target=x86_64-linux-gnu" HOSTCXX="clang++ --target=x86_64-linux-gnu"
+          make $KERNEL_CMDLINE $KERNEL_DEFCONFIG CC="clang"
+          make $KERNEL_CMDLINE CC="clang" -j$(nproc --all)
           cp out/arch/arm64/boot/Image.gz-dtb AnyKernel3
       - name: Upload Kernel
         uses: actions/upload-artifact@v7
