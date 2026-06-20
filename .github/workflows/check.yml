@@ -7,7 +7,8 @@ jobs:
     runs-on: ubuntu-latest
     env:
       CCACHE_COMPILERCHECK: "%compiler% -dumpmachine; %compiler% -dumpversion"
-      CCACHE_COMPRESSLEVEL: "1"
+#      CCACHE_COMPRESSLEVEL: "1"
+      CCACHE_COMPRESS: "false"
       CCACHE_SLOPPINESS: "time_macros,include_file_mtime,file_macro,pch_defines,system_headers"
       CCACHE_NOHASHDIR: "true"
       CCACHE_MAXSIZE: "4G"
@@ -63,7 +64,12 @@ jobs:
         run: |
           export PATH=$(pwd)/zyc-clang/bin/:$PATH 
           export KBUILD_BUILD_USER="andrey" KBUILD_BUILD_HOST="linux"
+          mkdir -p out
+          sudo mount -t tmpfs -o size=3G tmpfs $(pwd)/out
           make $KERNEL_CMDLINE $KERNEL_DEFCONFIG CC="ccache clang"
+          ./scripts/config --file out/.config --disable DEBUG_INFO
+          ./scripts/config --file out/.config --disable DEBUG_INFO_BTF
+          make $KERNEL_CMDLINE olddefconfig CC="ccache clang"
           make $KERNEL_CMDLINE CC="ccache clang" -j$(nproc --all)
           cp out/arch/arm64/boot/Image.gz-dtb AnyKernel3
       - name: Upload Kernel
