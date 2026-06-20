@@ -67,10 +67,10 @@ jobs:
           export KBUILD_BUILD_USER="andrey" KBUILD_BUILD_HOST="linux"
           mkdir -p out
           sudo mount -t tmpfs -o size=3G tmpfs $(pwd)/out
-          make $KERNEL_CMDLINE $KERNEL_DEFCONFIG CC="ccache clang"
+          make $KERNEL_CMDLINE $KERNEL_DEFCONFIG CC="ccache clang" HOSTCC="clang --target=x86_64-linux-gnu" HOSTCXX="clang++ --target=x86_64-linux-gnu"
           ./scripts/config --file out/.config --disable DEBUG_INFO
           ./scripts/config --file out/.config --disable DEBUG_INFO_BTF
-          make $KERNEL_CMDLINE olddefconfig CC="ccache clang"
+          make $KERNEL_CMDLINE olddefconfig CC="ccache clang" HOSTCC="clang --target=x86_64-linux-gnu" HOSTCXX="clang++ --target=x86_64-linux-gnu"
           make $KERNEL_CMDLINE CC="ccache clang" HOSTCC="clang --target=x86_64-linux-gnu" HOSTCXX="clang++ --target=x86_64-linux-gnu" -j$(nproc --all)
           cp out/arch/arm64/boot/Image.gz-dtb AnyKernel3
       - name: Upload Kernel
