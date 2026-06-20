@@ -15,6 +15,7 @@ jobs:
       KERNEL_DEFCONFIG: "star2qlte_chn_open_defconfig"
       KERNEL_CMDLINE: "ARCH=arm64 O=out LLVM=1"
       EXTRAVERSION: "-RelDEV"
+      CLANG_URL: "https://github.com/ZyCromerZ/Clang/releases/download/23.0.0git-20260119-release/Clang-23.0.0git-20260119.tar.gz"
     
     steps:
 #      - name: Cleanup
@@ -26,7 +27,7 @@ jobs:
 #          swap-size-gb: 24
 
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           repository: Andrey0800770/samsung_sdm845-kernel
           ref: dev
@@ -39,15 +40,24 @@ jobs:
           key: ccache-${{ github.workflow }}-${{ runner.os }}
           restore-keys: |
             ccache-${{ github.workflow }}-${{ runner.os }}
+
+      - name: Cache Clang Toolchain
+        id: cache-clang
+        uses: actions/cache@v5
+        with:
+          path: zyc-clang
+          key: clang-23.0.0git-20260119
             
       - name: Install dependencies
         run: |
           sed -i 's/EXTRAVERSION =.*/EXTRAVERSION = ${{ env.EXTRAVERSION }}/' Makefile
           sudo apt-get update -y 
-          sudo apt-get install -y --no-install-recommends aria2 binutils make python3 libssl-dev build-essential bc bison flex unzip ca-certificates xz-utils mkbootimg cpio device-tree-compiler git
-          aria2c -x16 -s16 -k1M https://github.com/ZyCromerZ/Clang/releases/download/23.0.0git-20260119-release/Clang-23.0.0git-20260119.tar.gz
-          mkdir zyc-clang
-          tar -I pigz -xf Clang-*.tar.gz -C zyc-clang 2>/dev/null || tar -xzf Clang-*.tar.gz -C zyc-clang
+          sudo apt-get install -y --no-install-recommends aria2 binutils make libssl-dev bc bison flex mkbootimg cpio device-tree-compiler
+          if [ "${{ steps.cache-clang.outputs.cache-hit }}" != "true" ]; then
+            aria2c -x16 -s16 -k1M ${{ env.CLANG_URL }}
+            mkdir -p zyc-clang
+            tar -I pigz -xf Clang-*.tar.gz -C zyc-clang 2>/dev/null || tar -xzf Clang-*.tar.gz -C zyc-clang
+          fi
           git clone --depth=1 https://github.com/Andrey0800770/kernel-build/ -b anykernel AnyKernel3 && rm -rf AnyKernel3/.git*
       - name: Build Kernel
         run: |
@@ -61,3 +71,4 @@ jobs:
         with:
           name: ${{ env.KERNEL_DEFCONFIG }}-${{ github.run_number }}
           path: "AnyKernel3/*"
+          compression-level: 0
