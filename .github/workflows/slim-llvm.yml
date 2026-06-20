@@ -57,7 +57,7 @@ jobs:
           if [ "${{ steps.cache-clang.outputs.cache-hit }}" != "true" ]; then
             aria2c -x16 -s16 -k1M ${{ env.CLANG_URL }}
             mkdir -p zyc-clang
-            tar -I pigz -xf Clang-*.tar.gz -C zyc-clang 2>/dev/null || tar -xzf Clang-*.tar.gz -C zyc-clang
+            tar -I pigz -xf llvm*.tar.gz -C zyc-clang 2>/dev/null || tar -xzf llvm*.tar.gz -C zyc-clang
           fi
           git clone --depth=1 https://github.com/Andrey0800770/kernel-build/ -b anykernel AnyKernel3 && rm -rf AnyKernel3/.git*
       - name: Build Kernel
