@@ -52,8 +52,8 @@ jobs:
       - name: Install dependencies
         run: |
           sed -i 's/EXTRAVERSION =.*/EXTRAVERSION = ${{ env.EXTRAVERSION }}/' Makefile
-          sudo apt-get update -y 
-          sudo apt-get install -y --no-install-recommends aria2 binutils make libssl-dev bc bison flex mkbootimg cpio device-tree-compiler
+          sudo apt install libhiredis1.1.0 gcc-arm-linux-gnueabi binutils-aarch64-linux-gnu -y
+          sudo apt install -y --no-install-recommends aria2 binutils make libssl-dev bc bison flex mkbootimg cpio device-tree-compiler
           if [ "${{ steps.cache-clang.outputs.cache-hit }}" != "true" ]; then
             aria2c -x16 -s16 -k1M ${{ env.CLANG_URL }}
             mkdir -p zyc-clang
