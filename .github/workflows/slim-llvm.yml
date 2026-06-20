@@ -59,9 +59,6 @@ jobs:
             mkdir -p zyc-clang
             tar -I pigz -xf llvm*.tar.gz -C zyc-clang 2>/dev/null || tar -xzf llvm*.tar.gz -C zyc-clang
           fi
-          ls zyc-clang
-          ls zyc-clang/llvm*
-          ls zyc-clang/llvm*/bin
           mv zyc-clang/llvm* zyc-clang/llvm
           git clone --depth=1 https://github.com/Andrey0800770/kernel-build/ -b anykernel AnyKernel3 && rm -rf AnyKernel3/.git*
       - name: Build Kernel
@@ -70,11 +67,11 @@ jobs:
           export KBUILD_BUILD_USER="andrey" KBUILD_BUILD_HOST="linux"
           mkdir -p out
           sudo mount -t tmpfs -o size=3G tmpfs $(pwd)/out
-          make $KERNEL_CMDLINE $KERNEL_DEFCONFIG CC="ccache clang"
+          make $KERNEL_CMDLINE $KERNEL_DEFCONFIG CC="ccache clang" HOSTCC="clang --target=x86_64-linux-gnu" HOSTCXX="clang++ --target=x86_64-linux-gnu"
           ./scripts/config --file out/.config --disable DEBUG_INFO
           ./scripts/config --file out/.config --disable DEBUG_INFO_BTF
-          make $KERNEL_CMDLINE olddefconfig CC="ccache clang"
-          make $KERNEL_CMDLINE CC="ccache clang" -j$(nproc --all)
+          make $KERNEL_CMDLINE olddefconfig CC="ccache clang" HOSTCC="clang --target=x86_64-linux-gnu" HOSTCXX="clang++ --target=x86_64-linux-gnu"
+          make $KERNEL_CMDLINE CC="ccache clang" HOSTCC="clang --target=x86_64-linux-gnu" HOSTCXX="clang++ --target=x86_64-linux-gnu" -j$(nproc --all)
           cp out/arch/arm64/boot/Image.gz-dtb AnyKernel3
       - name: Upload Kernel
         uses: actions/upload-artifact@v7
