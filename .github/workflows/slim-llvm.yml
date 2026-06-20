@@ -61,10 +61,6 @@ jobs:
           fi
           mv zyc-clang/llvm* zyc-clang/llvm
           git clone --depth=1 https://github.com/Andrey0800770/kernel-build/ -b anykernel AnyKernel3 && rm -rf AnyKernel3/.git*
-          clang --version
-          whereis clang
-          ld.lld --version
-          whereis ld.lld 
       - name: Build Kernel
         run: |
           export PATH=$(pwd)/zyc-clang/llvm/bin/:$PATH 
