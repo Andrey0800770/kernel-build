@@ -1,0 +1,80 @@
+name: Slim-LLVM Build
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      CCACHE_COMPILERCHECK: "%compiler% -dumpmachine; %compiler% -dumpversion"
+#      CCACHE_COMPRESSLEVEL: "1"
+      CCACHE_NOCOMPRESS: "true"
+      CCACHE_SLOPPINESS: "time_macros,include_file_mtime,file_macro,pch_defines,system_headers"
+      CCACHE_NOHASHDIR: "true"
+      CCACHE_MAXSIZE: "4G"
+      CCACHE_HARDLINK: "true"
+      KERNEL_DEFCONFIG: "star2qlte_chn_open_defconfig"
+      KERNEL_CMDLINE: "ARCH=arm64 O=out LLVM=1"
+      EXTRAVERSION: "-RelDEV"
+      CLANG_URL: "https://mirrors.edge.kernel.org/pub/tools/llvm/files/llvm-22.1.8-x86_64.tar.gz"
+    
+    steps:
+#      - name: Cleanup
+#        uses: rokibhasansagar/slimhub_actions@main
+
+#      - name: Set Swap Space
+#        uses: pierotofy/set-swap-space@master
+#        with:
+#          swap-size-gb: 24
+
+      - name: Checkout
+        uses: actions/checkout@v7
+        with:
+          repository: Andrey0800770/samsung_sdm845-kernel
+          ref: dev
+          submodules: "false"
+          fetch-depth: 1
+
+      - name: Set up ccache
+        uses: hendrikmuhs/ccache-action@v1.2
+        with:
+          key: ccache-${{ github.workflow }}-${{ runner.os }}
+          restore-keys: |
+            ccache-${{ github.workflow }}-${{ runner.os }}
+
+      - name: Cache Clang Toolchain
+        id: cache-clang
+        uses: actions/cache@v5
+        with:
+          path: zyc-clang
+          key: llvm-22.1.8-x86_64-20260119
+            
+      - name: Install dependencies
+        run: |
+          sed -i 's/EXTRAVERSION =.*/EXTRAVERSION = ${{ env.EXTRAVERSION }}/' Makefile
+          sudo apt-get update -y 
+          sudo apt-get install -y --no-install-recommends aria2 binutils make libssl-dev bc bison flex mkbootimg cpio device-tree-compiler
+          if [ "${{ steps.cache-clang.outputs.cache-hit }}" != "true" ]; then
+            aria2c -x16 -s16 -k1M ${{ env.CLANG_URL }}
+            mkdir -p zyc-clang
+            tar -I pigz -xf Clang-*.tar.gz -C zyc-clang 2>/dev/null || tar -xzf Clang-*.tar.gz -C zyc-clang
+          fi
+          git clone --depth=1 https://github.com/Andrey0800770/kernel-build/ -b anykernel AnyKernel3 && rm -rf AnyKernel3/.git*
+      - name: Build Kernel
+        run: |
+          export PATH=$(pwd)/zyc-clang/llvm*/bin/:$PATH 
+          export KBUILD_BUILD_USER="andrey" KBUILD_BUILD_HOST="linux"
+          mkdir -p out
+          sudo mount -t tmpfs -o size=3G tmpfs $(pwd)/out
+          make $KERNEL_CMDLINE $KERNEL_DEFCONFIG CC="ccache clang"
+          ./scripts/config --file out/.config --disable DEBUG_INFO
+          ./scripts/config --file out/.config --disable DEBUG_INFO_BTF
+          make $KERNEL_CMDLINE olddefconfig CC="ccache clang"
+          make $KERNEL_CMDLINE CC="ccache clang" -j$(nproc --all)
+          cp out/arch/arm64/boot/Image.gz-dtb AnyKernel3
+      - name: Upload Kernel
+        uses: actions/upload-artifact@v7
+        with:
+          name: ${{ env.KERNEL_DEFCONFIG }}-${{ github.run_number }}
+          path: "AnyKernel3/*"
+          compression-level: 0
