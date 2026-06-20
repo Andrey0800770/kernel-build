@@ -14,7 +14,7 @@ jobs:
       CCACHE_MAXSIZE: "4G"
       CCACHE_HARDLINK: "true"
       KERNEL_DEFCONFIG: "star2qlte_chn_open_defconfig"
-      KERNEL_CMDLINE: "ARCH=arm64 O=out LLVM=1"
+      KERNEL_CMDLINE: "ARCH=arm64 O=out LLVM=1 V=1"
       EXTRAVERSION: "-RelDEV"
       CLANG_URL: "https://mirrors.edge.kernel.org/pub/tools/llvm/files/llvm-22.1.8-x86_64.tar.gz"
     
