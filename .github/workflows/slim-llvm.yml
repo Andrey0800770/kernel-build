@@ -59,6 +59,9 @@ jobs:
             mkdir -p zyc-clang
             tar -I pigz -xf llvm*.tar.gz -C zyc-clang 2>/dev/null || tar -xzf llvm*.tar.gz -C zyc-clang
           fi
+          ls zyc-clang
+          ls zyc-clang/llvm*
+          ls zyc-clang/llvm*/bin
           git clone --depth=1 https://github.com/Andrey0800770/kernel-build/ -b anykernel AnyKernel3 && rm -rf AnyKernel3/.git*
       - name: Build Kernel
         run: |
