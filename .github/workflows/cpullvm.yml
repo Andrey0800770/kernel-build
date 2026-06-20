@@ -53,7 +53,7 @@ jobs:
         run: |
           sed -i 's/EXTRAVERSION =.*/EXTRAVERSION = ${{ env.EXTRAVERSION }}/' Makefile
           sudo apt-get update -y 
-          sudo apt-get install -y --no-install-recommends aria2 binutils make libssl-dev bc bison flex mkbootimg cpio device-tree-compiler xz-utils
+          sudo apt-get install -y --no-install-recommends aria2 binutils make libssl-dev bc bison flex mkbootimg cpio device-tree-compiler xz-utils pixz
           if [ "${{ steps.cache-clang.outputs.cache-hit }}" != "true" ]; then
             aria2c -x16 -s16 -k1M ${{ env.CLANG_URL }}
             mkdir clang
