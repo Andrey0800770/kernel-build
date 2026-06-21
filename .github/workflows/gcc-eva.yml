@@ -28,8 +28,8 @@ jobs:
           sed -i 's/EXTRAVERSION =.*/EXTRAVERSION = ${{ env.EXTRAVERSION }}/' Makefile
           sudo apt-get update -y 
           sudo apt install aria2 binutils make python3 libssl-dev build-essential bc bison flex unzip libssl-dev ca-certificates xz-utils mkbootimg cpio device-tree-compiler git git-lfs -y
-          aria2c -j$(nproc --all) -o gcc32.tar.xz https://github.com/mvaisakh/gcc-build/releases/download/31052026/eva-gcc-arm-31052026.xz && tar -xJf gcc32.tar.xz
-          aria2c -j$(nproc --all) -o gcc.tar.xz https://github.com/mvaisakh/gcc-build/releases/download/31052026/eva-gcc-arm64-31052026.xz && tar -xJf gcc.tar.xz
+          aria2c -j$(nproc --all) -o gcc32.xz https://github.com/mvaisakh/gcc-build/releases/download/31052026/eva-gcc-arm-31052026.xz && xz -d -T0 gcc32.xz
+          aria2c -j$(nproc --all) -o gcc.xz https://github.com/mvaisakh/gcc-build/releases/download/31052026/eva-gcc-arm64-31052026.xz && xz -d -T0 gcc.xz
           git clone --depth=1 https://github.com/Andrey0800770/kernel-build/ -b anykernel AnyKernel3 && rm -rf AnyKernel3/.git*
       - name: Build Kernel-With-KernelSU
         run: |
