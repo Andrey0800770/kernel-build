@@ -16,46 +16,32 @@ jobs:
     
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           repository: Andrey0800770/samsung_sdm845-kernel
-          ref: test
+          ref: dev
           submodules: "false"
-          fetch-depth: 100
-
-      - name: Set up ccache
-        uses: hendrikmuhs/ccache-action@v1.2
+          fetch-depth: 1
 
       - name: Install dependencies
         run: |
           sed -i 's/EXTRAVERSION =.*/EXTRAVERSION = ${{ env.EXTRAVERSION }}/' Makefile
-          sudo tee /etc/apt/sources.list > /dev/null <<EOF
-          deb http://archive.ubuntu.com/ubuntu/ noble main restricted universe multiverse
-          deb http://archive.ubuntu.com/ubuntu/ noble-updates main restricted universe multiverse
-          deb http://archive.ubuntu.com/ubuntu/ noble-backports main restricted universe multiverse
-          deb http://security.ubuntu.com/ubuntu/ noble-security main restricted universe multiverse
-          EOF
           sudo apt-get update -y 
           sudo apt install aria2 binutils make python3 libssl-dev build-essential bc bison flex unzip libssl-dev ca-certificates xz-utils mkbootimg cpio device-tree-compiler git git-lfs -y
           aria2c -j$(nproc --all) -o gcc32.tar.xz https://developer.arm.com/-/media/Files/downloads/gnu/14.2.rel1/binrel/arm-gnu-toolchain-14.2.rel1-x86_64-arm-none-linux-gnueabihf.tar.xz && tar -xJf gcc32.tar.xz
           aria2c -j$(nproc --all) -o gcc.tar.xz https://developer.arm.com/-/media/Files/downloads/gnu/14.2.rel1/binrel/arm-gnu-toolchain-14.2.rel1-x86_64-aarch64-none-linux-gnu.tar.xz && tar -xJf gcc.tar.xz
-          git clone https://github.com/osm0sis/AnyKernel3
-          sed -i 's/do.devicecheck=1/do.devicecheck=0/g' AnyKernel3/anykernel.sh
-          sed -i 's!BLOCK=/dev/block/platform/omap/omap_hsmmc.0/by-name/boot;!BLOCK=auto;!g' AnyKernel3/anykernel.sh
-          sed -i 's/IS_SLOT_DEVICE=0;/is_slot_device=auto;/g' AnyKernel3/anykernel.sh
-          rm -rf AnyKernel3/.git* AnyKernel3/README.md
+          git clone --depth=1 https://github.com/Andrey0800770/kernel-build/ -b anykernel AnyKernel3 && rm -rf AnyKernel3/.git*
           ls $(pwd)/
           ls $(pwd)/arm-gnu-toolchain-14.2.rel1-x86_64-aarch64-none-linux-gnu/bin
           ls $(pwd)/arm-gnu-toolchain-14.2.rel1-x86_64-arm-none-linux-gnueabihf/bin
       - name: Build Kernel-With-KernelSU
         run: |
-          rm -rf out
           export PATH=$(pwd)/arm-gnu-toolchain-14.2.rel1-x86_64-aarch64-none-linux-gnu/bin/:$(pwd)/arm-gnu-toolchain-14.2.rel1-x86_64-arm-none-linux-gnueabihf/bin:$PATH
-          make $KERNEL_CMDLINE $KERNEL_DEFCONFIG CC="ccache gcc"
-          make $KERNEL_CMDLINE CC="ccache gcc" -j$(nproc --all)
+          make $KERNEL_CMDLINE $KERNEL_DEFCONFIG CC="gcc"
+          make $KERNEL_CMDLINE CC="gcc" -j$(nproc --all)
           cp out/arch/arm64/boot/Image.gz-dtb AnyKernel3
       - name: Upload Kernel
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: ${{ env.KERNEL_DEFCONFIG }}
           path: "AnyKernel3/*"
