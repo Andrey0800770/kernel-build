@@ -7,12 +7,12 @@ jobs:
     runs-on: ubuntu-latest
     env:
       KERNEL_DEFCONFIG: "star2qlte_chn_open_defconfig"
-      KERNEL_CMDLINE: "ARCH=arm64 O=out LLVM=1 LLVM_IAS=1 LD=ld.lld LD_LIBRARY_PATH=/usr/lib/llvm-22/lib/"
+      KERNEL_CMDLINE: "ARCH=arm64 O=out LLVM=1 LD_LIBRARY_PATH=/usr/lib/llvm-22/lib/"
       EXTRAVERSION: "-RelDEV"
       
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           repository: Andrey0800770/samsung_sdm845-kernel
           ref: dev
@@ -32,15 +32,9 @@ jobs:
           deb http://security.ubuntu.com/ubuntu/ noble-security main restricted universe multiverse
           EOF
           sudo apt-get update -y 
-          sudo apt install libhiredis1.1.0 gcc-arm-linux-gnueabi binutils-aarch64-linux-gnu -y
           sudo dpkg -l | grep clang | awk '{print $2}' | xargs sudo apt-get remove -y
           wget https://apt.llvm.org/llvm.sh && chmod +x llvm.sh && sudo ./llvm.sh 22
           curl -L -o register_clang.sh https://raw.githubusercontent.com/Andrey0800770/kernel-build/main/files/update-alternatives.sh && chmod +x register_clang.sh && sudo bash -c 'set +e; for tool in clang++ clang-format clang-cpp clang-cl clangd clang-tidy clang-check clang-query asan_symbolize bugpoint dsymutil lld ld.lld lld-link llc lli obj2yaml opt sanstats verify-uselistorder wasm-ld yaml2obj; do update-alternatives --query $tool >/dev/null 2>&1 && update-alternatives --remove $tool /usr/bin/$tool-22 || true; done; ./register_clang.sh 22 1000 || true'
-          clang --version
-          ld.lld --version
-          llvm-as --version
-          clang -print-prog-name=ld
-          which ld.lld
           git clone --depth=1 https://github.com/Andrey0800770/kernel-build/ -b anykernel AnyKernel3 && rm -rf AnyKernel3/.git*
       - name: Build Kernel-With-KernelSU
         run: |
@@ -48,7 +42,7 @@ jobs:
           make $KERNEL_CMDLINE CC="clang" -j$(nproc --all)
           cp out/arch/arm64/boot/Image.gz-dtb AnyKernel3
       - name: Upload Kernel
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: ${{ env.KERNEL_DEFCONFIG }}-${{ github.run_number }}
           path: "AnyKernel3/*"
