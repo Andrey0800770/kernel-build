@@ -31,7 +31,7 @@ jobs:
         uses: actions/checkout@v7
         with:
           repository: Andrey0800770/samsung_sdm845-kernel
-          ref: main
+          ref: tmp
           submodules: "false"
           fetch-depth: 1
 
@@ -59,15 +59,10 @@ jobs:
             tar -I pigz -xf llvm*.tar.gz -C zyc-clang 2>/dev/null || tar -xzf llvm*.tar.gz -C zyc-clang
             mv zyc-clang/llvm* zyc-clang/llvm
           fi
-
           git clone --depth=1 https://github.com/Andrey0800770/kernel-build/ -b anykernel AnyKernel3 && rm -rf AnyKernel3/.git*
       - name: Build Kernel
         run: |
-          export PATH=$(pwd)/zyc-clang/llvm/bin/:$PATH 
-          clang --version
-          whereis clang
-          ld.lld --version
-          whereis ld.lld 
+          export PATH=$(pwd)/zyc-clang/llvm/bin/:$PATH
           export KBUILD_BUILD_USER="andrey" KBUILD_BUILD_HOST="linux"
           mkdir -p out
           sudo mount -t tmpfs -o size=3G tmpfs $(pwd)/out
