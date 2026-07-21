@@ -16,7 +16,7 @@ jobs:
       KERNEL_DEFCONFIG: "star2qlte_chn_open_defconfig"
       KERNEL_CMDLINE: "ARCH=arm64 O=out LLVM=1"
       EXTRAVERSION: "-RelDEV"
-      CLANG_URL: "https://mirrors.edge.kernel.org/pub/tools/llvm/files/llvm-22.1.8-x86_64.tar.gz"
+      CLANG_URL: "https://mirrors.edge.kernel.org/pub/tools/llvm/files/llvm-23.1.0-rc1-x86_64.tar.gz"
     
     steps:
 #      - name: Cleanup
