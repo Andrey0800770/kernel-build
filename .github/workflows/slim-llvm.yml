@@ -55,7 +55,7 @@ jobs:
           sudo apt install -y --no-install-recommends aria2 binutils make libssl-dev bc bison flex mkbootimg cpio device-tree-compiler
           if [ "${{ steps.cache-clang.outputs.cache-hit }}" != "true" ]; then
             aria2c -x$(nproc --all) -s$(nproc --all) -k1M ${{ env.CLANG_URL }}
-            mkdir -p zyc-clang
+            mkdir -p clang
             tar -I pigz -xf llvm*.tar.gz -C clang 2>/dev/null || tar -xzf llvm*.tar.gz -C clang
             mv clang/llvm* clang/llvm
           fi
