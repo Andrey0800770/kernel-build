@@ -46,7 +46,7 @@ jobs:
         id: cache-clang
         uses: actions/cache@v5
         with:
-          path: zyc-clang
+          path: clang
           key: llvm-23.1.0-rc2-x86_64
             
       - name: Install dependencies
@@ -54,15 +54,15 @@ jobs:
           sed -i 's/EXTRAVERSION =.*/EXTRAVERSION = ${{ env.EXTRAVERSION }}/' Makefile
           sudo apt install -y --no-install-recommends aria2 binutils make libssl-dev bc bison flex mkbootimg cpio device-tree-compiler
           if [ "${{ steps.cache-clang.outputs.cache-hit }}" != "true" ]; then
-            aria2c -x16 -s16 -k1M ${{ env.CLANG_URL }}
+            aria2c -x$(nproc --all) -s$(nproc --all) -k1M ${{ env.CLANG_URL }}
             mkdir -p zyc-clang
-            tar -I pigz -xf llvm*.tar.gz -C zyc-clang 2>/dev/null || tar -xzf llvm*.tar.gz -C zyc-clang
-            mv zyc-clang/llvm* zyc-clang/llvm
+            tar -I pigz -xf llvm*.tar.gz -C clang 2>/dev/null || tar -xzf llvm*.tar.gz -C clang
+            mv clang/llvm* clang/llvm
           fi
           git clone --depth=1 https://github.com/Andrey0800770/kernel-build/ -b anykernel AnyKernel3 && rm -rf AnyKernel3/.git*
       - name: Build Kernel
         run: |
-          export PATH=$(pwd)/zyc-clang/llvm/bin/:$PATH
+          export PATH=$(pwd)/clang/llvm/bin/:$PATH
           export KBUILD_BUILD_USER="andrey" KBUILD_BUILD_HOST="linux"
           mkdir -p out
           sudo mount -t tmpfs -o size=3G tmpfs $(pwd)/out
