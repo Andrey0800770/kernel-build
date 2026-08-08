@@ -16,7 +16,7 @@ jobs:
       KERNEL_DEFCONFIG: "star2qlte_chn_open_defconfig"
       KERNEL_CMDLINE: "ARCH=arm64 O=out LLVM=1"
       EXTRAVERSION: "-RelDEV"
-      CLANG_URL: "https://mirrors.edge.kernel.org/pub/tools/llvm/files/llvm-23.1.0-rc1-x86_64.tar.gz"
+      CLANG_URL: "https://mirrors.edge.kernel.org/pub/tools/llvm/files/llvm-23.1.0-rc2-x86_64.tar.xz"
     
     steps:
 #      - name: Cleanup
@@ -47,7 +47,7 @@ jobs:
         uses: actions/cache@v5
         with:
           path: zyc-clang
-          key: llvm-23.1.0-x86_64-20260119
+          key: llvm-23.1.0-rc2-x86_64
             
       - name: Install dependencies
         run: |
