@@ -1,0 +1,105 @@
+name: temp
+
+on:
+  workflow_dispatch:
+    inputs:
+      windows_iso_url:
+        description: 'Windows 11 ISO download URL (must be Portuguese - Brazil)'
+        required: true
+        default: 'https://software.download.prss.microsoft.com/dbazure/Windows11_Client_x64_pt-br_26300_9457.iso?t=239328cd-38b7-400c-9723-e59e01c8b8b8&P1=1792779243&P2=602&P3=2&P4=VxZL0mYlb6cwRYbvZV7kp8n9xzXLzx6vE04cjs7M%2fbJBu%2bYh6Cn8E1IMVNFaYTfNPTijUI0%2fqKqkRdzBNBVnmdQYdGwy18U9lL1RIotvpdye0nQe8MqGmnMGSDBS15AezDqx%2bVXhYeeviNSXkO%2buwAsyAK%2fhmmWpsqn65R9fbNXf%2blINyirv5SQxZiktY2jr0vfR8T1AXmXPXE%2fopO%2bfGjNP6kPjDhMfbpG4rAJTVJNJWQy%2fiHLcSynrRLrElx%2b9tuK5IAN%2bpusmeg%2bCYFbI5cPxaiA6VDxYpOR5Tu%2fCkeqEp38KjlGgAvWlIaEpgNHvTuTKZX38ql3pNAoHs0D7aA%3d%3d'
+      image_index:
+        description: 'Edition (1=Home, 4=Education, 6=Pro, 7=Pro N)'
+        type: choice
+        default: '6'
+        options: ['1', '4', '6', '7']
+      account_setup:
+        description: 'auto-admin = auto-create local account "Admin" | classic = create your own account during setup'
+        type: choice
+        default: 'auto-admin'
+        options: ['auto-admin', 'classic']
+      skip_cleanup:
+        description: 'Skip cleanup (debugging)'
+        type: boolean
+        default: false
+
+jobs:
+  build:
+    runs-on: windows-latest
+    timeout-minutes: 360
+    permissions:
+      contents: read
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install aria2c
+        shell: pwsh
+        run: choco install aria2 -y --no-progress
+
+      - name: Download Windows 11 ISO
+        shell: pwsh
+        env:
+          ISO_URL: ${{ inputs.windows_iso_url }}
+        run: |
+          aria2c `
+            --max-connection-per-server=16 `
+            --split=16 `
+            --min-split-size=5M `
+            --max-tries=5 `
+            --retry-wait=3 `
+            --timeout=60 `
+            --connect-timeout=30 `
+            --continue=true `
+            --allow-overwrite=true `
+            --auto-file-renaming=false `
+            --file-allocation=none `
+            --summary-interval=30 `
+            --out=Win11_Source.iso `
+            "$env:ISO_URL"
+
+          if (-not (Test-Path Win11_Source.iso)) { throw "Download failed: ISO not found" }
+
+      - name: Mount ISO
+        shell: pwsh
+        run: |
+          $iso = Join-Path $PWD "Win11_Source.iso"
+          $drive = (Mount-DiskImage -ImagePath $iso -PassThru | Get-Volume).DriveLetter
+          if (-not $drive) { throw "Failed to mount ISO" }
+          "ISO_DRIVE=$drive" | Add-Content $env:GITHUB_ENV
+
+      - name: Run tiny11maker
+        shell: pwsh
+        run: |
+          Set-ExecutionPolicy Bypass -Scope Process -Force
+          if (Test-Path autounattend.xml) { Copy-Item autounattend.xml scripts\ -Force }
+
+          $params = @{
+            ISO          = $env:ISO_DRIVE
+            INDEX        = [int]"${{ inputs.image_index }}"
+            AccountSetup = "${{ inputs.account_setup }}"
+          }
+          if ("${{ inputs.skip_cleanup }}" -eq "true") { $params.SkipCleanup = $true }
+
+          .\scripts\tiny11maker-headless.ps1 @params
+
+      - name: Rename ISO
+        shell: pwsh
+        run: |
+          $name = "Tiny11-$(Get-Date -Format 'yyyy-MM-dd').iso"
+          Move-Item .\scripts\tiny11.iso $name -Force
+          "ISO_NAME=$name" | Add-Content $env:GITHUB_ENV
+
+      - name: Upload to GoFile (free hosting)
+        shell: pwsh
+        run: |
+          $json = curl.exe -s --fail -F "file=@$env:ISO_NAME" https://upload.gofile.io/uploadfile
+          $resp = $json | ConvertFrom-Json
+          if ($resp.status -ne 'ok') { throw "Upload failed: $json" }
+
+          $link = $resp.data.downloadPage
+          @"
+          ## ISO ready
+          - **File:** $env:ISO_NAME
+          - **Download:** $link
+          "@ | Add-Content $env:GITHUB_STEP_SUMMARY
+          Write-Output "Download: $link"
