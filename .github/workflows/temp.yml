@@ -31,7 +31,9 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-
+        with:
+          repository: kelexine/tiny11-automated
+          
       - name: Install aria2c
         shell: pwsh
         run: choco install aria2 -y --no-progress
